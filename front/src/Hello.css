@@ -1,0 +1,116 @@
+/* Reset all margins and paddings for full coverage */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Consistent dimensions */
+}
+
+/* Make sure HTML and body span the entire viewport */
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4; /* Optional background color */
+}
+
+/* Main container to stretch fully */
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  width: 100%; /* Span full width */
+  height: 60px; /* Fixed navbar height */
+}
+
+/* Navbar sections */
+.navbar-left,
+.navbar-center,
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-left {
+  flex: 1; /* Align left section */
+}
+
+.navbar-center {
+  flex: 1; /* Center section */
+  justify-content: center;
+}
+
+.navbar-right {
+  flex: 1; /* Right section */
+  justify-content: flex-end;
+}
+
+.navbar-brand, .navbar-link {
+  color: white;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+.navbar-link:hover {
+  text-decoration: underline;
+}
+
+/* Search bar */
+.search-bar {
+  padding: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  width: 200px;
+}
+
+.search-button {
+  padding: 5px 10px;
+  margin-left: 10px;
+  font-size: 16px;
+  background-color: #555;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #777;
+}
+
+/* Logout button */
+.logout-button {
+  padding: 5px 10px;
+  font-size: 16px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: darkred;
+}
+
+/* Main content */
+.content {
+  flex-grow: 1; /* Fill the remaining vertical space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%; /* Full width */
+}
