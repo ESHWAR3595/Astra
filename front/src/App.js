@@ -4,6 +4,7 @@ import AppRoutes from './routes/AppRoutes';
 import { useNavigate } from 'react-router-dom';
 import './App.css'; // Make sure this line is present in your App.js
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {

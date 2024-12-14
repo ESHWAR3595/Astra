@@ -45,7 +45,7 @@ h2 {
 }
 
 /* Button Styles */
-button {
+.button {
     width: 100%;
     padding: 0.75rem;
     border: none;
