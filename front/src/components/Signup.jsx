@@ -58,7 +58,7 @@ function Signup() {
           placeholder="Create a password"
           required
         />
-        <button type="submit">Sign Up</button>
+        <button className="button" type="submit">Sign Up</button>
       </form>
       <p className="toggle-link">
         Already have an account? <a href="/">Login</a>

@@ -47,7 +47,7 @@ function Login({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Login</button>
+        <button className="button" type="submit">Login</button>
       </form>
       <div className="toggle-link">
         Don't have an account? <a href="/signup" onClick={(e) => { e.preventDefault(); navigate('/signup'); }}>Sign up</a>
