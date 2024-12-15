@@ -5,6 +5,7 @@ const pgSession = require('connect-pg-simple')(session);
 const pool = require('./config/db'); // PostgreSQL connection pool
 const authController = require('./controllers/authController'); // Auth controller
 const authMiddleware = require('./middlewares/authMiddleware'); // Auth middleware
+const Product = require('./models/Product');
 const cors = require('cors'); // Import CORS
 require('dotenv').config(); // Load environment variables
 
@@ -38,6 +39,14 @@ app.post('/register', authController.register);
 app.post('/login', authController.login);
 app.post('/logout', authMiddleware, authController.logout);
 app.get('/check-session', authController.checkSession);
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Product.getAllProducts();
+    res.json(products); // Send the product data as JSON
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching products' });
+  }
+});
 
 // Start the server
 const PORT = process.env.PORT || 5001;

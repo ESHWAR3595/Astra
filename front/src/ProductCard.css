@@ -1,0 +1,25 @@
+.product-cards-container {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap onto the next row */
+    justify-content: space-between; /* Ensures even spacing */
+    gap: 1rem; /* Adds spacing between items */
+    padding: 1rem; /* Adds padding around the container */
+  }
+  
+  .product-card {
+    flex: 1 1 calc(25% - 1rem); /* Makes each card take 25% of the row minus the gap */
+    max-width: calc(25% - 1rem); /* Ensures the max width is 25% of the container */
+    margin-bottom: 1rem; /* Adds spacing below each card */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+    border-radius: 8px; /* Rounds the card corners */
+    transition: transform 0.2s; /* Smooth hover effect */
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+  }
+  
+  .product-card img {
+    border-radius: 8px 8px 0 0; /* Rounds the image corners */
+  }
+  
