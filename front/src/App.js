@@ -1,15 +1,14 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
 import AppRoutes from './routes/AppRoutes';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './App.css'; // Make sure this line is present in your App.js
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate(); // Initialize the useNavigate hook
+  const navigate = useNavigate();
+  const location = useLocation(); // Get current route location
 
   useEffect(() => {
     // Check if the user is already logged in
@@ -44,8 +43,11 @@ function App() {
       .catch((error) => console.error('Error logging out:', error));
   };
 
+  // Conditionally add 'centered' class based on current route
+  const isLoginOrSignup = location.pathname === '/' || location.pathname === '/signup';
+
   return (
-    <div className="App">
+    <div className={`App ${isLoginOrSignup ? 'centered' : ''}`}>
       <AppRoutes isAuthenticated={isAuthenticated} onLogin={handleLogin} onLogout={handleLogout} />
     </div>
   );
