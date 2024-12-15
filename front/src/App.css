@@ -99,6 +99,21 @@ button:hover, .button:hover {
     margin: 0;
 }
 
+/* App.css */
+.App.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .App.loading {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #555;
+  }
+  
+
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
     .form-container {

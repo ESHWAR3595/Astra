@@ -1,4 +1,3 @@
-// src/components/Signup.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
@@ -21,7 +20,7 @@ function Signup() {
       const data = await response.json();
       if (response.ok) {
         console.log('Registration successful', data);
-        navigate('/'); // Redirect to Login page after successful registration
+        navigate('/login'); // Redirect to Login page after successful registration
       } else {
         console.error('Registration failed', data);
       }
@@ -61,7 +60,7 @@ function Signup() {
         <button className="button" type="submit">Sign Up</button>
       </form>
       <p className="toggle-link">
-        Already have an account? <a href="/">Login</a>
+        Already have an account? <a href="/login">Login</a>
       </p>
     </div>
   );

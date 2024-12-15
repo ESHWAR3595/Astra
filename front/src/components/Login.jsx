@@ -1,4 +1,3 @@
-// src/components/Login.jsx
 import React, { useState } from 'react';
 import '../App.css';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
@@ -22,6 +21,7 @@ function Login({ onLogin }) {
         if (response.ok) {
           // Call the onLogin prop to update the auth state in App.js
           onLogin();
+          navigate('/hello'); // Navigate to a protected route after successful login
         } else {
           console.error('Login failed');
         }
@@ -50,7 +50,7 @@ function Login({ onLogin }) {
         <button className="button" type="submit">Login</button>
       </form>
       <div className="toggle-link">
-        Don't have an account? <a href="/signup" onClick={(e) => { e.preventDefault(); navigate('/signup'); }}>Sign up</a>
+        Don't have an account? <a href="/signup">Sign up</a> {/* Normal link behavior */}
       </div>
     </div>
   );

@@ -1,25 +1,77 @@
+/* Container for all product cards */
 .product-cards-container {
     display: flex;
-    flex-wrap: wrap; /* Allows items to wrap onto the next row */
-    justify-content: space-between; /* Ensures even spacing */
-    gap: 1rem; /* Adds spacing between items */
-    padding: 1rem; /* Adds padding around the container */
+    flex-wrap: wrap;
+    gap: 20px; /* Space between cards */
+    justify-content: center; /* Center cards */
+    margin-top: 30px;
   }
   
+  /* Individual product card */
   .product-card {
-    flex: 1 1 calc(25% - 1rem); /* Makes each card take 25% of the row minus the gap */
-    max-width: calc(25% - 1rem); /* Ensures the max width is 25% of the container */
-    margin-bottom: 1rem; /* Adds spacing below each card */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
-    border-radius: 8px; /* Rounds the card corners */
-    transition: transform 0.2s; /* Smooth hover effect */
+    width: 300px;
+    min-height: 480px; /* Ensures consistent height */
+    border: 1px solid #e0e0e0; /* Adds a subtle border */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column; /* Ensure content alignment */
   }
   
+  /* Card hover effect */
   .product-card:hover {
     transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15); /* Add shadow on hover */
   }
   
-  .product-card img {
-    border-radius: 8px 8px 0 0; /* Rounds the image corners */
+  /* Image styling */
+  .product-image {
+    width: 100%;
+    height: 200px; /* Fixed height for uniformity */
+    object-fit: cover; /* Ensures the image fills the space without distortion */
+    border-bottom: 1px solid #ddd; /* Adds a divider */
+  }
+  
+  /* Card title styling */
+  .product-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333; /* Text color */
+    text-align: center;
+  }
+  
+  /* Card description */
+  .product-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+    text-align: justify; /* Aligns text for better readability */
+  }
+  
+  /* Button styling */
+  .product-view-button {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .product-view-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .product-cards-container {
+      gap: 15px; /* Reduce spacing on smaller screens */
+    }
+  
+    .product-card {
+      width: 100%; /* Full width for smaller screens */
+    }
   }
   
