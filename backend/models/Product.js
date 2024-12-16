@@ -14,7 +14,7 @@ const Product = {
       console.error('Error fetching products:', err);
       throw err;
     }
-  }
+  },
   
 
   // Create a new product in the database
@@ -31,7 +31,7 @@ const Product = {
       console.error('Error creating product:', err);
       throw err;
     }
-  };
+  },
   
   // Fetch a single product by ID
   getProductById: async (id) => {
@@ -82,7 +82,7 @@ const Product = {
       console.error('Error updating product:', err);
       throw err;
     }
-  };
+  },
   
 
   // Delete a product by ID

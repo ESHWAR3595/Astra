@@ -11,12 +11,12 @@ function AppRoutes({ isAuthenticated, onLogin, onLogout }) {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={<Card />} />
+      <Route path="/" element={<Login onLogin={onLogin} />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login onLogin={onLogin} />} />
       
       {/* Product Details Route */}
-      <Route path="/details/:id" element={<DetailsPage />} /> {/* Correct product details route */}
+      <Route path="/details/:id" element={isAuthenticated ? <DetailsPage /> : <Navigate to="/login" replace /> } /> /* Correct product details route */
 
       {/* Protected Routes */}
       <Route path="/hello" element={isAuthenticated ? <Hello onLogout={onLogout} /> : <Navigate to="/login" replace />} />
