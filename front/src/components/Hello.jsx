@@ -1,18 +1,28 @@
-// src/components/NavScrollExample.js
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import Carousel from './Carouse';
-import Card from './Card';
+import Carouse from './Carouse';  // Assuming your Carousel component is in the same directory
+import Card from './Card';  // Assuming your Card component is in the same directory
 
 function NavScrollExample({ onLogout }) {
-  // Handle Logout
+  const [query, setQuery] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
+
   const handleLogout = () => {
-    onLogout(); // Call the onLogout function passed from parent component
+    onLogout(); // Call the onLogout function passed from the parent component
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault(); // Prevent form from refreshing the page
+    if (query) {
+      // Navigate to the search results page with query as a parameter
+      navigate(`/search-results?query=${query}`);
+    }
   };
 
   return (
@@ -33,12 +43,14 @@ function NavScrollExample({ onLogout }) {
               </NavDropdown>
             </Nav>
 
-            <Form className="d-flex">
+            <Form className="d-flex" onSubmit={handleSearch}>
               <Form.Control
                 type="search"
                 placeholder="Search"
                 className="me-2"
                 aria-label="Search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)} // Update query state on input change
               />
               {/* Always render the Logout button */}
               <Button variant="outline-light" onClick={handleLogout}>
@@ -51,7 +63,10 @@ function NavScrollExample({ onLogout }) {
 
       {/* Main content */}
       <div>
-        <Carousel className="carousel" />
+        {/* Carousel Component */}
+        <Carouse className="carousel" />
+
+        {/* Card Component */}
         <Card />
       </div>
     </>
