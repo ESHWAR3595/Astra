@@ -59,7 +59,7 @@ function ProductCards() {
               </ListGroup.Item>
             </ListGroup>
             <Card.Body className="d-flex justify-content-center">
-              <Link to={`/details/${product.id}`} className="btn btn-primary product-view-button">
+              <Link to={`/view-details/${product.id}`} className="btn btn-primary product-view-button">
                 View Details
               </Link>
             </Card.Body>

@@ -6,8 +6,12 @@ const authController = require('./controllers/authController'); // Auth controll
 const authMiddleware = require('./middlewares/authMiddleware'); // Auth middleware
 require('dotenv').config(); // Load environment variables
 const cors = require('cors'); // Import CORS
-
+const { Client } = require('@elastic/elasticsearch'); // Elasticsearch client
+const axios = require('axios');  // Import axiosnode 
 const app = express();
+
+// Elasticsearch client setup
+const client = new Client({ node: 'http://localhost:9200' }); // Update the Elasticsearch URL if needed
 
 // Middleware
 app.use(
@@ -65,6 +69,46 @@ app.get('/api/products/:id', async (req, res) => {
   } catch (error) {
     console.error('Error fetching product:', error);
     res.status(500).json({ message: 'Error fetching product details' });
+  }
+});
+
+// Search products in Elasticsearch
+app.get('/api/search', async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).json({ message: 'Query is required' });
+  }
+
+  const esQuery = {
+    query: {
+      multi_match: {
+        query: query,
+        fields: ['name', 'description', 'category'] // Adjust fields as per your Elasticsearch mapping
+      }
+    }
+  };
+
+  try {
+    const response = await axios.post(
+      'http://localhost:9200/products/_search',
+      esQuery,
+      {
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+
+    // Log Elasticsearch response for debugging
+    console.log('Elasticsearch Response:', response.data);
+
+    if (response.data.hits.total.value > 0) {
+      res.json(response.data.hits.hits); // Send the search results back
+    } else {
+      res.json({ message: 'No results found' });
+    }
+  } catch (error) {
+    console.error('Error querying Elasticsearch:', error);
+    res.status(500).json({ message: 'Search query failed' });
   }
 });
 
