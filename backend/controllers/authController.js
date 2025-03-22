@@ -1,6 +1,6 @@
 // controllers/authController.js
 const pool = require('../config/db'); // Import database pool
-const bcrypt = require('bcrypt'); // Import bcrypt for password hashing
+const bcrypt = require('bcryptjs'); // Import bcrypt for password hashing
 
 // Register a new user
 const register = async (req, res) => {

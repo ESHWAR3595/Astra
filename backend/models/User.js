@@ -1,6 +1,6 @@
 // models/User.js
 const pool = require('../config/db');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const User = {
   createUser: async (name, email, password) => {

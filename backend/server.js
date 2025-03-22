@@ -7,7 +7,8 @@ const authMiddleware = require('./middlewares/authMiddleware'); // Auth middlewa
 require('dotenv').config(); // Load environment variables
 const cors = require('cors'); // Import CORS
 const { Client } = require('@elastic/elasticsearch'); // Elasticsearch client
-const axios = require('axios');  // Import axiosnode 
+const axios = require('axios');  // Import axios
+
 const app = express();
 
 // Elasticsearch client setup
@@ -23,6 +24,12 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Logging Middleware for Debugging
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`, req.body);
+  next();
+});
 
 // Session configuration
 app.use(
@@ -47,22 +54,27 @@ app.get('/check-session', authController.checkSession);
 // Fetch all products
 app.get('/api/products', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM products'); // Replace with your query
-    res.json(result.rows); // Send the product data as JSON
+    const result = await pool.query('SELECT * FROM products');
+    res.json(result.rows);
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ message: 'Error fetching products' });
   }
 });
 
-// Fetch product by ID
+// Fetch product by ID (Fixed ID Type Issue)
 app.get('/api/products/:id', async (req, res) => {
-  const { id } = req.params;
+  const productId = parseInt(req.params.id, 10);
+  
+  if (isNaN(productId)) {
+    return res.status(400).json({ message: "Invalid product ID" });
+  }
 
   try {
-    const result = await pool.query('SELECT * FROM products WHERE id = $1', [id]);
+    const result = await pool.query('SELECT * FROM products WHERE id = $1', [productId]);
+    
     if (result.rows.length > 0) {
-      res.json(result.rows[0]); // Send the specific product data
+      res.json(result.rows[0]);
     } else {
       res.status(404).json({ message: 'Product not found' });
     }
@@ -72,7 +84,7 @@ app.get('/api/products/:id', async (req, res) => {
   }
 });
 
-// Search products in Elasticsearch
+// Search products in Elasticsearch (Improved)
 app.get('/api/search', async (req, res) => {
   const { query } = req.query;
 
@@ -80,11 +92,35 @@ app.get('/api/search', async (req, res) => {
     return res.status(400).json({ message: 'Query is required' });
   }
 
+  // Check if Elasticsearch Index Exists
+  try {
+    await axios.get('http://localhost:9200/products');
+  } catch (error) {
+    console.error('Elasticsearch index does not exist:', error.response?.data || error.message);
+    return res.status(500).json({ message: "Elasticsearch index does not exist" });
+  }
+
+  // Elasticsearch Query with Better Matching
   const esQuery = {
     query: {
-      multi_match: {
-        query: query,
-        fields: ['name', 'description', 'category'] // Adjust fields as per your Elasticsearch mapping
+      bool: {
+        should: [
+          {
+            multi_match: {
+              query: query,
+              fields: ['name', 'description', 'category'],
+              type: "best_fields",
+              fuzziness: "AUTO",
+              operator: "or"
+            }
+          },
+          {
+            match_phrase: {
+              name: query
+            }
+          }
+        ],
+        minimum_should_match: 1
       }
     }
   };
@@ -93,21 +129,18 @@ app.get('/api/search', async (req, res) => {
     const response = await axios.post(
       'http://localhost:9200/products/_search',
       esQuery,
-      {
-        headers: { 'Content-Type': 'application/json' }
-      }
+      { headers: { 'Content-Type': 'application/json' } }
     );
 
-    // Log Elasticsearch response for debugging
     console.log('Elasticsearch Response:', response.data);
 
     if (response.data.hits.total.value > 0) {
-      res.json(response.data.hits.hits); // Send the search results back
+      res.json(response.data.hits.hits);
     } else {
       res.json({ message: 'No results found' });
     }
   } catch (error) {
-    console.error('Error querying Elasticsearch:', error);
+    console.error('Error querying Elasticsearch:', error.response?.data || error.message);
     res.status(500).json({ message: 'Search query failed' });
   }
 });
