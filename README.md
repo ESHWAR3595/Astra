@@ -39,6 +39,8 @@
 ### 🔍 **Detailed Product Experience**
 <div align="center">
 <img width="1721" height="935" alt="image" src="https://github.com/user-attachments/assets/c9750c47-b46e-40e6-8506-62b4d7ea7212" />
+<img width="1724" height="784" alt="image" src="https://github.com/user-attachments/assets/7170349d-5476-4090-9bd0-40f6343f1cb9" />
+
 
 *Comprehensive product details with customer reviews, stock management, and purchase options*
 </div>
