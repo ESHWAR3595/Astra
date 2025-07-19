@@ -5,11 +5,18 @@ const Product = {
   getAllProducts: async () => {
     try {
       const result = await pool.query(`
-        SELECT id, name, description, image_url, CAST(price AS FLOAT) AS price, in_stock, free_shipping
-        FROM products;
-
+        SELECT 
+          id, 
+          name, 
+          description, 
+          image_url AS "imageUrl", 
+          CAST(price AS FLOAT) AS price, 
+          in_stock AS "inStock", 
+          free_shipping AS "freeShipping"
+        FROM products
+        ORDER BY id ASC
       `);
-      return result.rows; // Ensure 'imageUrl' is correctly populated
+      return result.rows;
     } catch (err) {
       console.error('Error fetching products:', err);
       throw err;
