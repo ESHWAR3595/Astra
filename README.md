@@ -40,6 +40,8 @@
 <div align="center">
 <img width="1721" height="935" alt="image" src="https://github.com/user-attachments/assets/c9750c47-b46e-40e6-8506-62b4d7ea7212" />
 <img width="1724" height="784" alt="image" src="https://github.com/user-attachments/assets/7170349d-5476-4090-9bd0-40f6343f1cb9" />
+<img width="1722" height="955" alt="image" src="https://github.com/user-attachments/assets/ecf91c88-b834-442d-8471-d6c8c650f08c" />
+
 
 
 *Comprehensive product details with customer reviews, stock management, and purchase options*
