@@ -1,12 +1,12 @@
-// API Configuration - Works both locally and with containers
+// API Configuration - Works locally, containerized, and in production
 const API_CONFIG = {
   // Development environment (local)
   development: {
     baseURL: 'http://localhost:5001',
   },
-  // Production environment (containerized)
+  // Production environment (hosted)
   production: {
-    baseURL: 'http://localhost:5001', // For containerized frontend
+    baseURL: process.env.REACT_APP_API_URL || 'https://your-backend-url.railway.app',
   },
   // Docker environment (containerized)
   docker: {
@@ -24,7 +24,10 @@ const isContainerized = process.env.REACT_APP_CONTAINERIZED === 'true' ||
 // Determine the correct base URL
 let API_BASE_URL;
 
-if (isContainerized) {
+if (environment === 'production') {
+  // Production environment - use environment variable or fallback
+  API_BASE_URL = API_CONFIG.production.baseURL;
+} else if (isContainerized) {
   // If containerized, use localhost (frontend container can reach backend via host port)
   API_BASE_URL = 'http://localhost:5001';
 } else {
