@@ -1,7 +1,7 @@
 // src/components/Carousel.js
 import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-import '../Carousel.css'; // Make sure you have this CSS file for custom styles
+import '../styles/components/Carousel.css'; // Updated import path
 
 function DarkVariantExample() {
   return (

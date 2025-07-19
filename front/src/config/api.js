@@ -23,7 +23,7 @@ export const API_BASE_URL = API_CONFIG[environment]?.baseURL || API_CONFIG.devel
 // API endpoints
 export const API_ENDPOINTS = {
   LOGIN: '/login',
-  REGISTER: '/register',
+  SIGNUP: '/register', // Changed from /register to match backend
   LOGOUT: '/logout',
   CHECK_SESSION: '/check-session',
   PRODUCTS: '/api/products',
