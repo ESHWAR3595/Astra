@@ -28,6 +28,28 @@ app.use(require('express-session')(sessionConfig));
 // Logging middleware
 app.use(logger);
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Welcome to Astra E-Commerce API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      auth: {
+        login: '/login',
+        register: '/register',
+        logout: '/logout',
+        checkSession: '/check-session'
+      },
+      products: '/api/products',
+      search: '/api/search'
+    },
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ 
