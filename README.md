@@ -21,21 +21,24 @@
 
 ### 🎨 **Stunning Authentication Experience**
 <div align="center">
-<img src="https://via.placeholder.com/800x400/667eea/ffffff?text=ASTRA+Login+Page" alt="Astra Login Page" width="800" height="400" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);"/>
+<img width="1713" height="949" alt="image" src="https://github.com/user-attachments/assets/a117c551-a29e-4946-ae09-2487c9429b3a" />
+
 
 *Modern glassmorphism design with floating labels, animated backgrounds, and social login integration*
 </div>
 
 ### 🛍️ **Immersive Product Discovery**
 <div align="center">
-<img src="https://via.placeholder.com/800x400/764ba2/ffffff?text=Featured+Products+Grid" alt="Astra Product Grid" width="800" height="400" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);"/>
+<img width="1728" height="1117" alt="image" src="https://github.com/user-attachments/assets/f90e35f7-2de4-4f0d-aa44-e41c3e8417f0" />
+<img width="1696" height="942" alt="image" src="https://github.com/user-attachments/assets/9a31afe8-95cd-4fc4-a8cc-4ba71ccf6fb4" />
+
 
 *Clean product grid with wishlist integration, stock indicators, and seamless navigation*
 </div>
 
 ### 🔍 **Detailed Product Experience**
 <div align="center">
-<img src="https://via.placeholder.com/800x400/667eea/ffffff?text=Product+Details+Page" alt="Astra Product Details" width="800" height="400" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);"/>
+<img width="1721" height="935" alt="image" src="https://github.com/user-attachments/assets/c9750c47-b46e-40e6-8506-62b4d7ea7212" />
 
 *Comprehensive product details with customer reviews, stock management, and purchase options*
 </div>
