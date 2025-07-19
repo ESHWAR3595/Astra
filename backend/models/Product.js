@@ -31,7 +31,7 @@ const Product = {
       const result = await pool.query(`
         INSERT INTO products (name, description, image_url, price, in_stock, free_shipping) 
         VALUES ($1, $2, $3, $4, $5, $6) 
-        RETURNING id, name, description, image_url AS "imageUrl", price, in_stock AS "inStock", free_shipping AS "freeShipping"
+        RETURNING id, name, description, image_url AS "imageUrl", CAST(price AS FLOAT) AS price, in_stock AS "inStock", free_shipping AS "freeShipping"
       `, [name, description, cleanedUrl, price, inStock, freeShipping]);
       return result.rows[0];
     } catch (err) {
@@ -49,7 +49,7 @@ const Product = {
           name, 
           description, 
           image_url AS "imageUrl", 
-          price, 
+          CAST(price AS FLOAT) AS price, 
           in_stock AS "inStock", 
           free_shipping AS "freeShipping" 
         FROM products 
@@ -82,7 +82,7 @@ const Product = {
         UPDATE products 
         SET ${fields.join(', ')} 
         WHERE id = $${index} 
-        RETURNING id, name, description, image_url AS "imageUrl", price, in_stock AS "inStock", free_shipping AS "freeShipping"
+        RETURNING id, name, description, image_url AS "imageUrl", CAST(price AS FLOAT) AS price, in_stock AS "inStock", free_shipping AS "freeShipping"
       `, values);
       return result.rows[0];
     } catch (err) {

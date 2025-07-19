@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import { useImageLoader } from '../hooks/useImageLoader';
+import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { formatPrice, formatProductName, truncateText, getStockStatus } from '../utils/formatters';
 import '../styles/components/ProductCard.css';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const { isValidImageUrl, handleImageError } = useImageLoader();
+  const { addToCart, isInCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   
   // Default stock to 0 if not provided
   const stock = product.stock || 0;
@@ -17,6 +22,24 @@ const ProductCard = ({ product }) => {
   
   const handleViewDetails = () => {
     navigate(`/view-details/${product.id}`);
+  };
+
+  const handleAddToCart = async (e) => {
+    e.stopPropagation();
+    if (stockStatus.status === 'out') return;
+    
+    setIsAddingToCart(true);
+    addToCart(product, 1);
+    
+    // Show feedback
+    setTimeout(() => {
+      setIsAddingToCart(false);
+    }, 1000);
+  };
+
+  const handleToggleWishlist = (e) => {
+    e.stopPropagation();
+    toggleWishlist(product);
   };
 
   const imageUrl = isValidImageUrl(product.imageUrl) ? product.imageUrl : null;
@@ -38,6 +61,17 @@ const ProductCard = ({ product }) => {
         >
           {stockStatus.text}
         </Badge>
+        
+        {/* Wishlist Button */}
+        <Button
+          variant="outline-light"
+          size="sm"
+          className={`wishlist-btn ${isInWishlist(product.id) ? 'liked' : ''}`}
+          onClick={handleToggleWishlist}
+          title={isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <i className={`bi bi-heart${isInWishlist(product.id) ? '-fill' : ''}`}></i>
+        </Button>
       </div>
       
       <Card.Body className="d-flex flex-column">
@@ -59,14 +93,42 @@ const ProductCard = ({ product }) => {
             )}
           </div>
           
-          <Button 
-            variant="primary" 
-            onClick={handleViewDetails}
-            disabled={stockStatus.status === 'out'}
-            className="view-details-btn"
-          >
-            {stockStatus.status === 'out' ? 'Out of Stock' : 'View Details'}
-          </Button>
+          <div className="action-buttons">
+            <Button 
+              variant="outline-primary" 
+              size="sm"
+              onClick={handleAddToCart}
+              disabled={stockStatus.status === 'out' || isAddingToCart}
+              className="add-to-cart-btn"
+              title={isInCart(product.id) ? 'Already in cart' : 'Add to cart'}
+            >
+              {isAddingToCart ? (
+                <>
+                  <i className="bi bi-check-circle-fill me-1"></i>
+                  Added!
+                </>
+              ) : isInCart(product.id) ? (
+                <>
+                  <i className="bi bi-cart-check me-1"></i>
+                  In Cart
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-cart-plus me-1"></i>
+                  Add to Cart
+                </>
+              )}
+            </Button>
+            
+            <Button 
+              variant="primary" 
+              onClick={handleViewDetails}
+              disabled={stockStatus.status === 'out'}
+              className="view-details-btn"
+            >
+              {stockStatus.status === 'out' ? 'Out of Stock' : 'View Details'}
+            </Button>
+          </div>
         </div>
       </Card.Body>
     </Card>

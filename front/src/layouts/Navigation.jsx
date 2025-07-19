@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Badge from 'react-bootstrap/Badge';
 import '../styles/layouts/Navigation.css';
 
 const Navigation = () => {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { getCartItemCount } = useCart();
+  const { getWishlistCount } = useWishlist();
 
   const handleLogout = async () => {
     const result = await logout();
@@ -33,6 +38,17 @@ const Navigation = () => {
   const handleNavClick = (e, path) => {
     e.preventDefault();
     navigate(path);
+  };
+
+  const handleCartClick = (e) => {
+    e.preventDefault();
+    navigate('/cart');
+  };
+
+  const handleWishlistClick = (e) => {
+    e.preventDefault();
+    // TODO: Navigate to wishlist page when created
+    alert('Wishlist page coming soon!');
   };
 
   return (
@@ -81,19 +97,49 @@ const Navigation = () => {
               <Form.Control
                 type="search"
                 placeholder="Search products..."
-                className="search-input me-2"
+                className="search-input"
                 aria-label="Search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-              <Button 
-                variant="success" 
-                type="submit"
-                className="search-btn"
-              >
-                Search
-              </Button>
             </Form>
+            
+            {/* Wishlist Icon */}
+            <Button
+              variant="outline-light"
+              className="wishlist-icon-btn me-2"
+              onClick={handleWishlistClick}
+              title="View Wishlist"
+            >
+              <i className="bi bi-heart"></i>
+              {getWishlistCount() > 0 && (
+                <Badge 
+                  bg="warning" 
+                  className="wishlist-badge"
+                >
+                  {getWishlistCount()}
+                </Badge>
+              )}
+            </Button>
+            
+            {/* Cart Icon */}
+            <Button
+              variant="outline-light"
+              className="cart-icon-btn me-2"
+              onClick={handleCartClick}
+              title="View Cart"
+            >
+              <i className="bi bi-cart3"></i>
+              {getCartItemCount() > 0 && (
+                <Badge 
+                  bg="danger" 
+                  className="cart-badge"
+                >
+                  {getCartItemCount()}
+                </Badge>
+              )}
+            </Button>
+            
             <Button 
               variant="danger" 
               onClick={handleLogout}

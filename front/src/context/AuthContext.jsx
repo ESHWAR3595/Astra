@@ -46,6 +46,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
+      console.log('AuthContext: Starting login process');
       const response = await fetch(buildApiUrl(API_ENDPOINTS.LOGIN), {
         method: 'POST',
         headers: {
@@ -56,10 +57,18 @@ export const AuthProvider = ({ children }) => {
       });
 
       const data = await response.json();
+      console.log('AuthContext: Login response:', data);
 
       if (data.success) {
+        // Update state immediately
+        console.log('AuthContext: Login successful, setting isAuthenticated to true');
         setIsAuthenticated(true);
         setUser(data.user || null);
+        
+        // Force a small delay to ensure state is updated
+        await new Promise(resolve => setTimeout(resolve, 100));
+        console.log('AuthContext: Login delay completed');
+        
         return { success: true };
       } else {
         return { success: false, message: data.message || 'Login failed' };
@@ -84,8 +93,13 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (data.success) {
+        // Update state immediately
         setIsAuthenticated(true);
         setUser(data.user || null);
+        
+        // Force a small delay to ensure state is updated
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         return { success: true };
       } else {
         return { success: false, message: data.message || 'Signup failed' };

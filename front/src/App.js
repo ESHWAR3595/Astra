@@ -2,6 +2,8 @@
 import React from 'react';
 import { ProductProvider } from './context/ProductContext';
 import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
+import { WishlistProvider } from './context/WishlistContext';
 import AppRoutes from './routes/AppRoutes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/utils/Global.css';
@@ -11,9 +13,13 @@ function App() {
   return (
     <AuthProvider>
       <ProductProvider>
-        <div className="App">
-          <AppRoutes />
-        </div>
+        <CartProvider>
+          <WishlistProvider>
+            <div className="App">
+              <AppRoutes />
+            </div>
+          </WishlistProvider>
+        </CartProvider>
       </ProductProvider>
     </AuthProvider>
   );

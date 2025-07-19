@@ -50,6 +50,106 @@
   z-index: 2 !important;
 }
 
+/* Wishlist Button */
+.product-card .wishlist-btn {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: 2px solid #000000 !important;
+  backdrop-filter: blur(10px) !important;
+  z-index: 3 !important;
+  transition: all 0.3s ease !important;
+  padding: 0 !important;
+  color: #000000 !important;
+}
+
+/* Default state - black border, transparent background */
+.product-card .wishlist-btn {
+  background: transparent !important;
+  border: 2px solid #000000 !important;
+  color: #000000 !important;
+}
+
+/* Hover state - red border, still transparent */
+.product-card .wishlist-btn:hover {
+  background: transparent !important;
+  border: 2px solid #dc3545 !important;
+  color: #dc3545 !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2) !important;
+}
+
+/* Liked state - red background, white heart */
+.product-card .wishlist-btn.liked {
+  background: #dc3545 !important;
+  border: 2px solid #dc3545 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
+}
+
+/* Liked state hover - darker red */
+.product-card .wishlist-btn.liked:hover {
+  background: #c82333 !important;
+  border: 2px solid #c82333 !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 6px 16px rgba(200, 35, 51, 0.4) !important;
+}
+
+.product-card .wishlist-btn i {
+  font-size: 1rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.product-card .wishlist-btn:hover i {
+  transform: scale(1.2) !important;
+}
+
+/* Click animation */
+.product-card .wishlist-btn:active {
+  transform: scale(0.95) !important;
+  transition: transform 0.1s ease !important;
+}
+
+/* Wishlist state change animation */
+.product-card .wishlist-btn.liked {
+  animation: wishlistPulse 2s infinite !important;
+}
+
+.product-card .wishlist-btn.liked.added {
+  animation: wishlistAdded 0.3s ease-out !important;
+}
+
+@keyframes wishlistAdded {
+  0% {
+    transform: scale(1) !important;
+  }
+  50% {
+    transform: scale(1.2) !important;
+  }
+  100% {
+    transform: scale(1) !important;
+  }
+}
+
+@keyframes wishlistPulse {
+  0% {
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5) !important;
+  }
+  100% {
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
+  }
+}
+
 /* Card Body */
 .product-card .card-body {
   padding: 1.25rem !important;
@@ -108,6 +208,39 @@
   color: #6c757d !important;
 }
 
+/* Action Buttons Container */
+.product-card .action-buttons {
+  display: flex !important;
+  gap: 0.5rem !important;
+  flex-direction: column !important;
+}
+
+/* Add to Cart Button */
+.product-card .add-to-cart-btn {
+  padding: 0.5rem 1rem !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  transition: all 0.3s ease !important;
+  font-size: 0.85rem !important;
+  border: 2px solid #007bff !important;
+  background: transparent !important;
+  color: #007bff !important;
+}
+
+.product-card .add-to-cart-btn:hover:not(:disabled) {
+  background: #007bff !important;
+  color: white !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+}
+
+.product-card .add-to-cart-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  border-color: #6c757d !important;
+  color: #6c757d !important;
+}
+
 /* View Details Button */
 .product-card .view-details-btn {
   width: 100% !important;
@@ -146,6 +279,10 @@
   
   .product-card .product-price {
     font-size: 1.1rem !important;
+  }
+  
+  .product-card .action-buttons {
+    flex-direction: column !important;
   }
 }
 

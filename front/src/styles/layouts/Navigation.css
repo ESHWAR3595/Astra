@@ -53,7 +53,8 @@
   display: flex !important;
   align-items: center !important;
   gap: 0.5rem !important;
-  max-width: 400px !important;
+  max-width: 500px !important;
+  flex: 1 !important;
 }
 
 .navbar-custom .search-input {
@@ -65,6 +66,8 @@
   transition: all 0.3s ease !important;
   font-size: 0.9rem !important;
   color: #333 !important;
+  width: 100% !important;
+  min-width: 300px !important;
 }
 
 .navbar-custom .search-input:focus {
@@ -79,24 +82,125 @@
   font-style: italic !important;
 }
 
-.navbar-custom .search-btn {
-  background: #28a745 !important;
-  border: none !important;
-  border-radius: 25px !important;
-  padding: 0.75rem 1.5rem !important;
-  color: white !important;
-  font-weight: 600 !important;
+/* Cart Icon Button */
+.navbar-custom .cart-icon-btn {
+  position: relative !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 50% !important;
+  width: 45px !important;
+  height: 45px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
   transition: all 0.3s ease !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
-  font-size: 0.85rem !important;
+  padding: 0 !important;
+  color: white !important;
 }
 
-.navbar-custom .search-btn:hover {
-  background: #218838 !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3) !important;
+.navbar-custom .cart-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
   color: white !important;
+}
+
+.navbar-custom .cart-icon-btn i {
+  font-size: 1.2rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.navbar-custom .cart-icon-btn:hover i {
+  transform: scale(1.1) !important;
+}
+
+/* Wishlist Icon Button */
+.navbar-custom .wishlist-icon-btn {
+  position: relative !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 50% !important;
+  width: 45px !important;
+  height: 45px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.3s ease !important;
+  padding: 0 !important;
+  color: white !important;
+}
+
+.navbar-custom .wishlist-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+  color: white !important;
+}
+
+.navbar-custom .wishlist-icon-btn i {
+  font-size: 1.2rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.navbar-custom .wishlist-icon-btn:hover i {
+  transform: scale(1.1) !important;
+}
+
+/* Cart Badge */
+.navbar-custom .cart-badge {
+  position: absolute !important;
+  top: -8px !important;
+  right: -8px !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 12px !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #dc3545 !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3) !important;
+  animation: pulse 2s infinite !important;
+}
+
+/* Wishlist Badge */
+.navbar-custom .wishlist-badge {
+  position: absolute !important;
+  top: -8px !important;
+  right: -8px !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 12px !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #ffc107 !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3) !important;
+  animation: pulse 2s infinite !important;
+  color: #212529 !important;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1) !important;
+  }
+  50% {
+    transform: scale(1.1) !important;
+  }
+  100% {
+    transform: scale(1) !important;
+  }
 }
 
 /* Logout Button */
@@ -166,6 +270,12 @@
     max-width: 100% !important;
     margin: 1rem 0 !important;
     flex-direction: column !important;
+    width: 100% !important;
+  }
+  
+  .navbar-custom .search-input {
+    min-width: auto !important;
+    width: 100% !important;
   }
   
   .navbar-custom .navbar-nav {
@@ -175,6 +285,18 @@
   .navbar-custom .navbar-nav .nav-link {
     margin: 0.25rem 0 !important;
     text-align: center !important;
+  }
+  
+  .navbar-custom .cart-icon-btn,
+  .navbar-custom .wishlist-icon-btn {
+    width: 40px !important;
+    height: 40px !important;
+    margin: 0.5rem 0 !important;
+  }
+  
+  .navbar-custom .cart-icon-btn i,
+  .navbar-custom .wishlist-icon-btn i {
+    font-size: 1rem !important;
   }
   
   .navbar-custom .logout-btn {

@@ -1,65 +1,85 @@
 // src/components/Carousel.js
 import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-import '../styles/components/Carousel.css'; // Updated import path
+import Button from 'react-bootstrap/Button';
+import '../styles/components/Carousel.css';
 
-function DarkVariantExample() {
+function ElectronicsCarousel() {
   return (
     <Carousel data-bs-theme="dark" className="custom-carousel">
       <Carousel.Item>
-        <img
-          className="d-block w-100 custom-carousel-image"
-          src="https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg"
-          alt="First slide"
-          srcSet="
-            https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg 1200w,
-            https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg 800w,
-            https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg 600w"
-          sizes="(max-width: 768px) 600px, 1200px"
-        />
-        <Carousel.Caption>
-          <h5>First slide label</h5>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-        </Carousel.Caption>
+        <div className="carousel-slide independence-sale">
+          <div className="carousel-content">
+            <div className="carousel-text">
+              <h1 className="carousel-title">
+                <span className="independence-text">INDEPENDENCE</span>
+                <span className="sale-text">UP TO 50% OFF</span>
+              </h1>
+              <p className="carousel-subtitle">Celebrate freedom with amazing deals</p>
+              <Button variant="success" size="lg" className="shop-now-btn">
+                SHOP NOW
+              </Button>
+            </div>
+            <div className="carousel-decoration">
+              <div className="independence-symbols">
+                <div className="symbol">🇮🇳</div>
+                <div className="symbol">🏛️</div>
+                <div className="symbol">🎆</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </Carousel.Item>
 
       <Carousel.Item>
-        <img
-          className="d-block w-100 custom-carousel-image"
-          src="https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg"
-          alt="Second slide"
-          srcSet="
-            https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg 1200w,
-            https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg 800w,
-            https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg 600w"
-          sizes="(max-width: 768px) 600px, 1200px"
-        />
-        <Carousel.Caption>
-          <h5>Second slide label</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </Carousel.Caption>
+        <div className="carousel-slide tech-sale">
+          <div className="carousel-content">
+            <div className="carousel-text">
+              <h1 className="carousel-title">
+                <span className="tech-text">TECH SALE</span>
+                <span className="discount-text">30% OFF</span>
+              </h1>
+              <p className="carousel-subtitle">Premium electronics at unbeatable prices</p>
+              <Button variant="primary" size="lg" className="shop-now-btn">
+                EXPLORE DEALS
+              </Button>
+            </div>
+            <div className="carousel-decoration">
+              <div className="tech-icons">
+                <div className="tech-icon">🎧</div>
+                <div className="tech-icon">⌚</div>
+                <div className="tech-icon">📱</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </Carousel.Item>
 
       <Carousel.Item>
-        <img
-          className="d-block w-100 custom-carousel-image"
-          src="https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg"
-          alt="Third slide"
-          srcSet="
-            https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg 1200w,
-            https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg 800w,
-            https://www.shutterstock.com/image-vector/merry-christmas-sale-promotion-poster-260nw-2063944733.jpg 600w"
-          sizes="(max-width: 768px) 600px, 1200px"
-        />
-        <Carousel.Caption>
-          <h5>Third slide label</h5>
-          <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-          </p>
-        </Carousel.Caption>
+        <div className="carousel-slide new-arrivals">
+          <div className="carousel-content">
+            <div className="carousel-text">
+              <h1 className="carousel-title">
+                <span className="new-text">NEW ARRIVALS</span>
+                <span className="featured-text">FEATURED</span>
+              </h1>
+              <p className="carousel-subtitle">Discover the latest in technology</p>
+              <Button variant="warning" size="lg" className="shop-now-btn">
+                VIEW NEW
+              </Button>
+            </div>
+            <div className="carousel-decoration">
+              <div className="product-highlights">
+                <div className="highlight">Wireless Headphones</div>
+                <div className="highlight">Smart Watches</div>
+                <div className="highlight">Bluetooth Speakers</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </Carousel.Item>
     </Carousel>
   );
 }
 
-export default DarkVariantExample;
+export default ElectronicsCarousel;

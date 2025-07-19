@@ -1,178 +1,358 @@
-/* Carousel.css - Enhanced styling for carousel component */
+/* Carousel.css - Enhanced styling for electronics store carousel */
 
 .custom-carousel {
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  margin-bottom: 2rem;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  margin-bottom: 2rem !important;
 }
 
-.custom-carousel-image {
-  height: 400px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
+/* Carousel Slide Base */
+.carousel-slide {
+  height: 400px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
 
-.custom-carousel:hover .custom-carousel-image {
-  transform: scale(1.02);
+/* Independence Day Sale Slide */
+.carousel-slide.independence-sale {
+  background: linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%) !important;
+  position: relative !important;
+}
+
+.carousel-slide.independence-sale::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 20px,
+    rgba(255, 255, 255, 0.1) 20px,
+    rgba(255, 255, 255, 0.1) 40px
+  ) !important;
+  pointer-events: none !important;
+}
+
+/* Tech Sale Slide */
+.carousel-slide.tech-sale {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 50%, #004085 100%) !important;
+}
+
+/* New Arrivals Slide */
+.carousel-slide.new-arrivals {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 50%, #17a2b8 100%) !important;
+}
+
+/* Carousel Content */
+.carousel-content {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  padding: 0 3rem !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Carousel Text */
+.carousel-text {
+  flex: 1 !important;
+  color: #333 !important;
+  text-align: left !important;
+}
+
+.carousel-title {
+  font-size: 3.5rem !important;
+  font-weight: 800 !important;
+  margin-bottom: 1rem !important;
+  line-height: 1.1 !important;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.carousel-title .independence-text {
+  display: block !important;
+  font-size: 4rem !important;
+  margin-bottom: 0.5rem !important;
+  color: #FF9933 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+.carousel-title .sale-text {
+  display: block !important;
+  color: #138808 !important;
+  font-size: 3rem !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+.carousel-title .tech-text {
+  display: block !important;
+  font-size: 3.5rem !important;
+  margin-bottom: 0.5rem !important;
+  color: white !important;
+}
+
+.carousel-title .discount-text {
+  display: block !important;
+  color: #ffc107 !important;
+  font-size: 2.5rem !important;
+}
+
+.carousel-title .new-text {
+  display: block !important;
+  font-size: 3.5rem !important;
+  margin-bottom: 0.5rem !important;
+  color: white !important;
+}
+
+.carousel-title .featured-text {
+  display: block !important;
+  color: #ffc107 !important;
+  font-size: 2.5rem !important;
+}
+
+.carousel-subtitle {
+  font-size: 1.3rem !important;
+  margin-bottom: 2rem !important;
+  opacity: 0.9 !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+}
+
+/* Shop Now Button */
+.shop-now-btn {
+  padding: 1rem 2rem !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  border-radius: 50px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.shop-now-btn:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Carousel Decoration */
+.carousel-decoration {
+  flex: 1 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Independence Symbols */
+.independence-symbols {
+  display: flex !important;
+  gap: 1.5rem !important;
+  animation: float 3s ease-in-out infinite !important;
+}
+
+.symbol {
+  font-size: 4rem !important;
+  animation: bounce 2s ease-in-out infinite !important;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3)) !important;
+}
+
+.symbol:nth-child(1) {
+  animation-delay: 0s !important;
+}
+
+.symbol:nth-child(2) {
+  animation-delay: 0.3s !important;
+}
+
+.symbol:nth-child(3) {
+  animation-delay: 0.6s !important;
+}
+
+/* Tech Icons */
+.tech-icons {
+  display: flex !important;
+  gap: 2rem !important;
+  animation: slideInRight 1s ease-out !important;
+}
+
+.tech-icon {
+  font-size: 4rem !important;
+  animation: pulse 2s ease-in-out infinite !important;
+  color: white !important;
+}
+
+.tech-icon:nth-child(2) {
+  animation-delay: 0.5s !important;
+}
+
+.tech-icon:nth-child(3) {
+  animation-delay: 1s !important;
+}
+
+/* Product Highlights */
+.product-highlights {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  animation: slideInRight 1s ease-out !important;
+}
+
+.highlight {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 25px !important;
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  animation: fadeInUp 0.8s ease-out !important;
+}
+
+.highlight:nth-child(2) {
+  animation-delay: 0.2s !important;
+}
+
+.highlight:nth-child(3) {
+  animation-delay: 0.4s !important;
 }
 
 /* Carousel Controls */
 .custom-carousel .carousel-control-prev,
 .custom-carousel .carousel-control-next {
-  width: 50px;
-  height: 50px;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 50%;
-  top: 50%;
-  transform: translateY(-50%);
-  margin: 0 20px;
-  transition: all 0.3s ease;
+  width: 50px !important;
+  height: 50px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 50% !important;
+  margin: auto 2rem !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  transition: all 0.3s ease !important;
 }
 
 .custom-carousel .carousel-control-prev:hover,
 .custom-carousel .carousel-control-next:hover {
-  background: rgba(0, 0, 0, 0.7);
-  transform: translateY(-50%) scale(1.1);
+  background: rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.1) !important;
 }
 
-.custom-carousel .carousel-control-prev-icon,
-.custom-carousel .carousel-control-next-icon {
-  width: 24px;
-  height: 24px;
-}
-
-/* Carousel Indicators */
 .custom-carousel .carousel-indicators {
-  bottom: 20px;
+  bottom: 20px !important;
 }
 
 .custom-carousel .carousel-indicators button {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin: 0 5px;
-  background: rgba(255, 255, 255, 0.5);
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  transition: all 0.3s ease;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.5) !important;
+  border: 2px solid rgba(255, 255, 255, 0.8) !important;
+  margin: 0 5px !important;
+  transition: all 0.3s ease !important;
 }
 
 .custom-carousel .carousel-indicators button.active {
-  background: #ffffff;
-  transform: scale(1.2);
+  background: white !important;
+  transform: scale(1.2) !important;
 }
 
-.custom-carousel .carousel-indicators button:hover {
-  background: rgba(255, 255, 255, 0.8);
-  transform: scale(1.1);
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }
 
-/* Carousel Caption */
-.custom-carousel .carousel-caption {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
-  border-radius: 12px;
-  padding: 1.5rem;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: 80%;
-  backdrop-filter: blur(10px);
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
 }
 
-.custom-carousel .carousel-caption h5 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: #ffffff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
 }
 
-.custom-carousel .carousel-caption p {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 0;
-  line-height: 1.4;
-}
-
-/* Dark Theme Enhancements */
-[data-bs-theme="dark"] .custom-carousel {
-  background: #1a1a1a;
-}
-
-[data-bs-theme="dark"] .custom-carousel .carousel-caption {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 100%);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .custom-carousel-image {
-    height: 250px;
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
   }
-  
-  .custom-carousel .carousel-caption {
-    bottom: 40px;
-    padding: 1rem;
-    max-width: 90%;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
-  
-  .custom-carousel .carousel-caption h5 {
-    font-size: 1.2rem;
-  }
-  
-  .custom-carousel .carousel-caption p {
-    font-size: 0.9rem;
-  }
-  
-  .custom-carousel .carousel-control-prev,
-  .custom-carousel .carousel-control-next {
-    width: 40px;
-    height: 40px;
-    margin: 0 10px;
-  }
-}
-
-@media (max-width: 576px) {
-  .custom-carousel-image {
-    height: 200px;
-  }
-  
-  .custom-carousel .carousel-caption {
-    bottom: 20px;
-    padding: 0.75rem;
-  }
-  
-  .custom-carousel .carousel-caption h5 {
-    font-size: 1rem;
-  }
-  
-  .custom-carousel .carousel-caption p {
-    font-size: 0.8rem;
-  }
-}
-
-/* Animation for carousel items */
-.custom-carousel .carousel-item {
-  transition: transform 0.6s ease-in-out;
-}
-
-/* Loading state */
-.custom-carousel.loading {
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-/* Fade animation for captions */
-.custom-carousel .carousel-caption {
-  animation: fadeInUp 0.8s ease-out;
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(20px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .carousel-slide {
+    height: 300px !important;
+  }
+  
+  .carousel-content {
+    flex-direction: column !important;
+    text-align: center !important;
+    padding: 0 1rem !important;
+  }
+  
+  .carousel-title {
+    font-size: 2.5rem !important;
+  }
+  
+  .carousel-title .independence-text {
+    font-size: 3rem !important;
+  }
+  
+  .carousel-title .sale-text {
+    font-size: 2rem !important;
+  }
+  
+  .carousel-subtitle {
+    font-size: 1.1rem !important;
+  }
+  
+  .independence-symbols {
+    margin-top: 1rem !important;
+  }
+  
+  .symbol {
+    font-size: 3rem !important;
+  }
+  
+  .tech-icons {
+    margin-top: 1rem !important;
+  }
+  
+  .tech-icon {
+    font-size: 3rem !important;
+  }
+  
+  .product-highlights {
+    margin-top: 1rem !important;
+  }
+  
+  .highlight {
+    font-size: 1rem !important;
+    padding: 0.5rem 1rem !important;
   }
 } 

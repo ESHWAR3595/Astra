@@ -6,6 +6,7 @@ import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import SearchResultsPage from '../pages/SearchResultsPage';
 import ProductDetailsPage from '../pages/ProductDetailsPage';
+import CartPage from '../pages/CartPage';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 // Protected Route Component
@@ -54,6 +55,12 @@ function AppRoutes() {
       <Route path="/view-details/:id" element={
         <ProtectedRoute>
           <ProductDetailsPage />
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/cart" element={
+        <ProtectedRoute>
+          <CartPage />
         </ProtectedRoute>
       } />
 
