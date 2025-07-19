@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  frontend:
+    build: .
+    ports:
+      - "3000:3000"  # Map port 3000 of the container to port 3000 on your host
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge

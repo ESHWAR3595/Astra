@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { buildApiUrl, API_ENDPOINTS } from './config/api';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -15,7 +16,7 @@ function App() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await fetch('http://localhost:5001/check-session', {
+        const response = await fetch(buildApiUrl(API_ENDPOINTS.CHECK_SESSION), {
           credentials: 'include',
         });
         const data = await response.json();
@@ -40,7 +41,7 @@ function App() {
   // Handle logout
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:5001/logout', {
+      const response = await fetch(buildApiUrl(API_ENDPOINTS.LOGOUT), {
         method: 'POST',
         credentials: 'include',
       });

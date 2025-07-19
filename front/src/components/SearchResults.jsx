@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../SearchResults.css'; // Import the CSS file for styling
+import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 function SearchResults() {
   const [searchResults, setSearchResults] = useState([]);
@@ -12,7 +13,7 @@ function SearchResults() {
     const fetchResults = async () => {
       if (query) {
         try {
-          const response = await fetch(`http://localhost:5001/api/search?query=${query}`);
+          const response = await fetch(`${buildApiUrl(API_ENDPOINTS.SEARCH)}?query=${query}`);
           const data = await response.json();
           console.log('API response:', data);
           if (Array.isArray(data)) {

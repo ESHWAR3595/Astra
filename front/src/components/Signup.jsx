@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
+import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 function Signup() {
   const [name, setName] = useState('');
@@ -11,7 +12,7 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5001/register', {
+      const response = await fetch(buildApiUrl(API_ENDPOINTS.REGISTER), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),

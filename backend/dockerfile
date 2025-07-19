@@ -1,20 +1,11 @@
-# Step 1: Use an official Node.js image as the base image
-FROM node:20
+FROM node:20-slim
 
-# Step 2: Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Step 3: Copy package.json and package-lock.json (if you have it) to the container
-COPY package*.json ./
+COPY package*.json ./ RUN npm install
 
-# Step 4: Install dependencies in the container
-RUN npm install
-
-# Step 5: Copy the entire backend code (including config, controllers, middlewares, models, and server.js)
 COPY . .
 
-# Step 6: Expose the port that your backend is running on (assuming it's port 5001)
 EXPOSE 5001
 
-# Step 7: Command to run the backend application
 CMD ["node", "server.js"]

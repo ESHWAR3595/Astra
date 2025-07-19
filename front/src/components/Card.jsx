@@ -4,13 +4,14 @@ import axios from 'axios';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import '../ProductCard.css'; // Custom CSS for styling
+import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 function ProductCards() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     axios
-      .get('http://localhost:5001/api/products')
+      .get(buildApiUrl(API_ENDPOINTS.PRODUCTS))
       .then((response) => {
         const sanitizedProducts = response.data.map((product) => ({
           ...product,

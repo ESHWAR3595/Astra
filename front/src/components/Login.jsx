@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../App.css';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 function Login({ onLogin }) {
   const [email, setEmail] = useState('');
@@ -9,7 +10,7 @@ function Login({ onLogin }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch('http://localhost:5001/login', {
+    fetch(buildApiUrl(API_ENDPOINTS.LOGIN), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
