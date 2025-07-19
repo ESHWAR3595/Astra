@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./config/swagger');
 
 // Import configurations
 const corsOptions = require('./config/cors');
@@ -28,14 +30,22 @@ app.use(require('express-session')(sessionConfig));
 // Logging middleware
 app.use(logger);
 
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Astra E-Commerce API Documentation'
+}));
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
     success: true,
     message: 'Welcome to Astra E-Commerce API',
     version: '1.0.0',
+    documentation: '/api-docs',
     endpoints: {
       health: '/health',
+      docs: '/api-docs',
       auth: {
         login: '/login',
         register: '/register',
@@ -82,6 +92,7 @@ const server = app.listen(PORT, () => {
   console.log(`🚀 Astra API Server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
 });
 
 // Graceful shutdown
