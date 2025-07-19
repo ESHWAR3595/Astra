@@ -6,7 +6,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 // Authentication routes
 router.post('/register', authController.register);
 router.post('/login', authController.login);
-router.post('/logout', authMiddleware, authController.logout);
+router.post('/logout', authController.logout); // Remove authMiddleware for logout
 router.get('/check-session', authController.checkSession);
 
 module.exports = router; 

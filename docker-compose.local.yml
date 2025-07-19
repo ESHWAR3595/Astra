@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  astra-db:
+    image: postgres:15-alpine
+    container_name: astra-db-local
+    environment:
+      POSTGRES_DB: astra
+      POSTGRES_USER: astra_user
+      POSTGRES_PASSWORD: astra_password
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U astra_user -d astra"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  astra-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: astra-backend-local
+    environment:
+      NODE_ENV: development
+      CONTAINERIZED: false
+      PORT: 5000
+      DB_USER: astra_user
+      DB_HOST: astra-db
+      DB_NAME: astra
+      DB_PASS: astra_password
+      DB_PORT: 5432
+      JWT_SECRET: your_super_secret_jwt_key_here
+      ELASTICSEARCH_URL: http://es:9200
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "5001:5000"
+    depends_on:
+      astra-db:
+        condition: service_healthy
+      es:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run dev
+
+  # Frontend React App
+  astra-frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile.dev
+    container_name: astra-frontend-local
+    environment:
+      NODE_ENV: development
+      REACT_APP_API_URL: http://localhost:5001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - astra-backend
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    command: npm start
+
+  # Elasticsearch
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: astra-es-local
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Kibana (optional)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: astra-kibana-local
+    environment:
+      ELASTICSEARCH_HOSTS: http://es:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      es:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  elasticsearch_data: 

@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: astra-postgres-dev
+    environment:
+      POSTGRES_DB: astra_dev
+      POSTGRES_USER: astra_user
+      POSTGRES_PASSWORD: astra_password
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - astra-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U astra_user -d astra_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Elasticsearch for Search
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: astra-elasticsearch-dev
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_dev_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - astra-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Backend API (Development)
+  backend-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: astra-backend-dev
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      DB_USER: astra_user
+      DB_HOST: postgres
+      DB_NAME: astra_dev
+      DB_PASS: astra_password
+      DB_PORT: 5432
+      JWT_SECRET: dev_jwt_secret_key
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - astra-dev-network
+    command: npm run dev
+    restart: unless-stopped
+
+  # Frontend React App (Development)
+  frontend-dev:
+    build:
+      context: ./front
+      dockerfile: Dockerfile.dev
+    container_name: astra-frontend-dev
+    environment:
+      REACT_APP_API_URL: http://localhost:5000
+      CHOKIDAR_USEPOLLING: true
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-dev
+    networks:
+      - astra-dev-network
+    command: npm start
+    restart: unless-stopped
+
+# Volumes
+volumes:
+  postgres_dev_data:
+    driver: local
+  elasticsearch_dev_data:
+    driver: local
+
+# Networks
+networks:
+  astra-dev-network:
+    driver: bridge 

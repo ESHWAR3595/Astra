@@ -16,27 +16,52 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  // Check session on mount
+  // Check session on mount and set up periodic checks
   useEffect(() => {
     checkSession();
-  }, []);
+    
+    // Set up periodic session checks every 5 minutes
+    const sessionCheckInterval = setInterval(() => {
+      if (isAuthenticated) {
+        console.log('AuthContext: Periodic session check...');
+        checkSession();
+      }
+    }, 5 * 60 * 1000); // 5 minutes
+    
+    // Cleanup interval on unmount
+    return () => {
+      clearInterval(sessionCheckInterval);
+    };
+  }, [isAuthenticated]);
 
   const checkSession = async () => {
     try {
+      console.log('AuthContext: Checking session...');
       const response = await fetch(buildApiUrl(API_ENDPOINTS.CHECK_SESSION), {
         credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
-      const data = await response.json();
       
-      if (data.isAuthenticated) {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('AuthContext: Session check response:', data);
+      
+      if (data.isAuthenticated && data.user) {
+        console.log('AuthContext: User is authenticated:', data.user);
         setIsAuthenticated(true);
-        setUser(data.user || null);
+        setUser(data.user);
       } else {
+        console.log('AuthContext: User is not authenticated');
         setIsAuthenticated(false);
         setUser(null);
       }
     } catch (error) {
-      console.error('Error checking session:', error);
+      console.error('AuthContext: Error checking session:', error);
       setIsAuthenticated(false);
       setUser(null);
     } finally {

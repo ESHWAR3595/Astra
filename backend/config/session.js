@@ -6,13 +6,14 @@ const sessionConfig = {
   store: new pgSession({
     pool: pool,
     tableName: 'session',
+    createTableIfMissing: true,
   }),
   secret: process.env.SESSION_SECRET || 'fallback-secret-key',
-  resave: false,
+  resave: true, // Changed to true to ensure session is saved
   saveUninitialized: false,
   cookie: { 
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    secure: false, // Changed to false for development and containerized environments
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     httpOnly: true,
     sameSite: 'lax'
   },

@@ -1,9 +1,10 @@
 const cors = require('cors');
+const config = require('./environment');
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: config.cors.origin,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true,
+  credentials: config.cors.credentials,
   optionsSuccessStatus: 200,
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 };

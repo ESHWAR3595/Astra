@@ -1,4 +1,5 @@
 const axios = require('axios');
+const config = require('../config/environment');
 
 const searchController = {
   // Search products in Elasticsearch
@@ -14,7 +15,7 @@ const searchController = {
 
     // Check if Elasticsearch Index Exists
     try {
-      await axios.get(`${process.env.ELASTICSEARCH_URL || 'http://localhost:9200'}/products`);
+      await axios.get(`${config.elasticsearch.url}/products`);
     } catch (error) {
       console.error('Elasticsearch index does not exist:', error.response?.data || error.message);
       return res.status(500).json({ 
@@ -50,7 +51,7 @@ const searchController = {
 
     try {
       const response = await axios.post(
-        `${process.env.ELASTICSEARCH_URL || 'http://localhost:9200'}/products/_search`,
+        `${config.elasticsearch.url}/products/_search`,
         esQuery,
         { headers: { 'Content-Type': 'application/json' } }
       );
