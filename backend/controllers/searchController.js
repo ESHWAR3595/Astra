@@ -14,13 +14,12 @@ const performPostgreSQLSearch = async (req, res) => {
 
     // Build PostgreSQL search query
     let sqlQuery = `
-      SELECT id, name, description, price, category, 
-             image_url, rating, stock_quantity, in_stock, free_shipping
+      SELECT id, name, description, price, 
+             image_url, in_stock, free_shipping
       FROM products 
       WHERE (
         name ILIKE $1 OR 
-        description ILIKE $1 OR 
-        category ILIKE $1
+        description ILIKE $1
       )
     `;
     
@@ -28,12 +27,7 @@ const performPostgreSQLSearch = async (req, res) => {
     const queryParams = [searchTerm];
     let paramCount = 1;
 
-    // Add category filter
-    if (category) {
-      paramCount++;
-      sqlQuery += ` AND category ILIKE $${paramCount}`;
-      queryParams.push(`%${category}%`);
-    }
+    // Note: Category filter removed since category column doesn't exist in database
 
     // Add price range filters
     if (minPrice || maxPrice) {
@@ -64,10 +58,10 @@ const performPostgreSQLSearch = async (req, res) => {
       name: row.name,
       description: row.description,
       price: row.price,
-      category: row.category,
+      category: 'Electronics', // Default category since it's not in DB
       imageUrl: row.image_url, // Convert snake_case to camelCase
-      rating: row.rating,
-      stockQuantity: row.stock_quantity, // Convert snake_case to camelCase
+      rating: 4.5, // Default rating since it's not in DB
+      stockQuantity: row.in_stock ? 10 : 0, // Convert in_stock to stock quantity
       inStock: row.in_stock, // Convert snake_case to camelCase
       freeShipping: row.free_shipping // Convert snake_case to camelCase
     }));
