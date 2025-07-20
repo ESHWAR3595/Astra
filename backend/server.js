@@ -326,6 +326,27 @@ app.get('/insert-all-products', async (req, res) => {
   }
 });
 
+// Setup Elasticsearch endpoint
+app.get('/setup-elasticsearch', async (req, res) => {
+  try {
+    const setupElasticsearch = require('./setupElasticsearch');
+    await setupElasticsearch();
+    
+    res.json({
+      success: true,
+      message: 'Elasticsearch setup completed successfully',
+      elasticsearchUrl: process.env.ELASTICSEARCH_URL || 'http://localhost:9200'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to setup Elasticsearch',
+      error: error.message,
+      elasticsearchUrl: process.env.ELASTICSEARCH_URL || 'http://localhost:9200'
+    });
+  }
+});
+
 // API Routes
 app.use('/', authRoutes);
 app.use('/api/products', productRoutes);
