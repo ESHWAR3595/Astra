@@ -15,7 +15,7 @@ const performPostgreSQLSearch = async (req, res) => {
     // Build PostgreSQL search query
     let sqlQuery = `
       SELECT id, name, description, price, category, 
-             "imageUrl", rating, "stockQuantity", "inStock", "freeShipping"
+             image_url, rating, stock_quantity, in_stock, free_shipping
       FROM products 
       WHERE (
         name ILIKE $1 OR 
@@ -58,10 +58,24 @@ const performPostgreSQLSearch = async (req, res) => {
 
     console.log('PostgreSQL search results:', result.rows.length);
 
+    // Transform PostgreSQL results to match frontend expectations
+    const transformedResults = result.rows.map(row => ({
+      id: row.id,
+      name: row.name,
+      description: row.description,
+      price: row.price,
+      category: row.category,
+      imageUrl: row.image_url, // Convert snake_case to camelCase
+      rating: row.rating,
+      stockQuantity: row.stock_quantity, // Convert snake_case to camelCase
+      inStock: row.in_stock, // Convert snake_case to camelCase
+      freeShipping: row.free_shipping // Convert snake_case to camelCase
+    }));
+
     res.json({
       success: true,
       query: query,
-      data: result.rows,
+      data: transformedResults,
       total: result.rows.length,
       source: 'postgresql',
       pagination: {
