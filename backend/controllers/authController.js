@@ -66,9 +66,10 @@ const login = async (req, res) => {
             message: 'Login successful',
             user: {
               id: user.id,
-              name: user.name,
+              username: user.username,
               email: user.email
-            }
+            },
+            sessionId: req.sessionID // Return session ID for frontend
           });
         });
       } else {
@@ -102,6 +103,10 @@ const checkSession = async (req, res) => {
   console.log('Session check - User ID:', req.session.userId);
   console.log('Session check - Full session:', req.session);
   console.log('Session check - Cookies:', req.headers.cookie);
+  console.log('Session check - Query params:', req.query);
+  
+  // Try to get session ID from query params as fallback
+  const sessionId = req.query.sessionId || req.sessionID;
   
   if (req.session && req.session.userId) {
     try {

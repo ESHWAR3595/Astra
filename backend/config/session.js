@@ -12,11 +12,11 @@ const sessionConfig = {
   resave: true,
   saveUninitialized: false,
   cookie: { 
-    secure: process.env.NODE_ENV === 'production' ? false : false, // Set to false for Railway
+    secure: false, // Set to false for cross-origin
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    httpOnly: true,
-    sameSite: 'lax',
-    domain: process.env.NODE_ENV === 'production' ? '.railway.app' : undefined
+    httpOnly: false, // Set to false to allow JavaScript access
+    sameSite: 'none', // Allow cross-origin
+    domain: undefined // Remove domain restriction
   },
   name: 'astra-session'
 };
