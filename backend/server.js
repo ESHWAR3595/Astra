@@ -187,9 +187,6 @@ app.get('/create-tables', async (req, res) => {
         price DECIMAL(10,2) NOT NULL,
         category VARCHAR(100),
         image_url TEXT,
-        in_stock BOOLEAN DEFAULT true,
-        free_shipping BOOLEAN DEFAULT false,
-        stock_quantity INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
@@ -267,6 +264,38 @@ app.get('/add-sample-products', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to add sample products',
+      error: error.message
+    });
+  }
+});
+
+// Fix products table structure endpoint
+app.get('/fix-products-table', async (req, res) => {
+  try {
+    const pool = require('./config/db');
+    const client = await pool.connect();
+    
+    // Add missing columns if they don't exist
+    await client.query(`
+      ALTER TABLE products 
+      ADD COLUMN IF NOT EXISTS in_stock BOOLEAN DEFAULT true
+    `);
+    
+    await client.query(`
+      ALTER TABLE products 
+      ADD COLUMN IF NOT EXISTS free_shipping BOOLEAN DEFAULT false
+    `);
+    
+    client.release();
+    
+    res.json({
+      success: true,
+      message: 'Products table structure fixed successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fix products table',
       error: error.message
     });
   }
