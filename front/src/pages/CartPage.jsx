@@ -7,7 +7,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import Badge from 'react-bootstrap/Badge';
 import Alert from 'react-bootstrap/Alert';
 import { formatPrice } from '../utils/formatters';
 import '../styles/pages/CartPage.css';

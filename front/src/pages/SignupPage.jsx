@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
 import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';

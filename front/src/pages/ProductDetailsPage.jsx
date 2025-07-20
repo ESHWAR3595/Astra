@@ -41,7 +41,6 @@ const ProductDetailsPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(0);
   const [showShimmer, setShowShimmer] = useState(false);
   const [hoveredElement, setHoveredElement] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
