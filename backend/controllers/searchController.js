@@ -2,6 +2,84 @@ const axios = require('axios');
 const config = require('../config/environment');
 const { Pool } = require('pg');
 
+// PostgreSQL search function
+const performPostgreSQLSearch = async (req, res) => {
+  const { q: query, page = 1, limit = 10, category, minPrice, maxPrice } = req.query;
+  
+  try {
+    const pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    });
+
+    // Build PostgreSQL search query
+    let sqlQuery = `
+      SELECT id, name, description, price, category, 
+             "imageUrl", rating, "stockQuantity", "inStock", "freeShipping"
+      FROM products 
+      WHERE (
+        name ILIKE $1 OR 
+        description ILIKE $1 OR 
+        category ILIKE $1
+      )
+    `;
+    
+    const searchTerm = `%${query}%`;
+    const queryParams = [searchTerm];
+    let paramCount = 1;
+
+    // Add category filter
+    if (category) {
+      paramCount++;
+      sqlQuery += ` AND category ILIKE $${paramCount}`;
+      queryParams.push(`%${category}%`);
+    }
+
+    // Add price range filters
+    if (minPrice || maxPrice) {
+      if (minPrice) {
+        paramCount++;
+        sqlQuery += ` AND price >= $${paramCount}`;
+        queryParams.push(parseFloat(minPrice));
+      }
+      if (maxPrice) {
+        paramCount++;
+        sqlQuery += ` AND price <= $${paramCount}`;
+        queryParams.push(parseFloat(maxPrice));
+      }
+    }
+
+    // Add pagination
+    sqlQuery += ` ORDER BY name ASC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
+    queryParams.push(parseInt(limit), (parseInt(page) - 1) * parseInt(limit));
+
+    const result = await pool.query(sqlQuery, queryParams);
+    await pool.end();
+
+    console.log('PostgreSQL search results:', result.rows.length);
+
+    res.json({
+      success: true,
+      query: query,
+      data: result.rows,
+      total: result.rows.length,
+      source: 'postgresql',
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        pages: Math.ceil(result.rows.length / limit)
+      }
+    });
+  } catch (pgError) {
+    console.error('PostgreSQL search failed:', pgError);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Search query failed - database unavailable',
+      error: process.env.NODE_ENV === 'development' ? pgError.message : undefined
+    });
+  }
+};
+
 const searchController = {
   // Search products in Elasticsearch
   searchProducts: async (req, res) => {
@@ -16,11 +94,8 @@ const searchController = {
 
     // Check if Elasticsearch URL is configured
     if (!config.elasticsearch.url || config.elasticsearch.url === 'http://localhost:9200') {
-      return res.status(503).json({ 
-        success: false, 
-        message: 'Elasticsearch is not configured. Please set ELASTICSEARCH_URL in Railway.',
-        setupGuide: 'Check RAILWAY_ELASTICSEARCH_SETUP.md for setup instructions'
-      });
+      console.log('Elasticsearch not configured, falling back to PostgreSQL search...');
+      return await performPostgreSQLSearch(req, res);
     }
 
     // Prepare authentication headers for Railway Elasticsearch
@@ -38,12 +113,8 @@ const searchController = {
       });
     } catch (error) {
       console.error('Elasticsearch index does not exist:', error.response?.data || error.message);
-      return res.status(500).json({ 
-        success: false, 
-        message: "Elasticsearch index does not exist. Please run /setup-elasticsearch first.",
-        elasticsearchUrl: config.elasticsearch.url,
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
-      });
+      console.log('Falling back to PostgreSQL search...');
+      return await performPostgreSQLSearch(req, res);
     }
 
     // Build Elasticsearch query with filters
@@ -125,6 +196,7 @@ const searchController = {
           query: query,
           data: products,
           total: response.data.hits.total.value,
+          source: 'elasticsearch',
           pagination: {
             page: parseInt(page),
             limit: parseInt(limit),
@@ -138,6 +210,7 @@ const searchController = {
           data: [],
           message: 'No results found',
           total: 0,
+          source: 'elasticsearch',
           pagination: {
             page: parseInt(page),
             limit: parseInt(limit),
@@ -150,78 +223,7 @@ const searchController = {
       
       // Fallback to PostgreSQL search
       console.log('Falling back to PostgreSQL search...');
-      try {
-        const pool = new Pool({
-          connectionString: process.env.DATABASE_URL,
-          ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-        });
-
-        // Build PostgreSQL search query
-        let sqlQuery = `
-          SELECT id, name, description, price, category, 
-                 "imageUrl", rating, "stockQuantity", "inStock", "freeShipping"
-          FROM products 
-          WHERE (
-            name ILIKE $1 OR 
-            description ILIKE $1 OR 
-            category ILIKE $1
-          )
-        `;
-        
-        const searchTerm = `%${query}%`;
-        const queryParams = [searchTerm];
-        let paramCount = 1;
-
-        // Add category filter
-        if (category) {
-          paramCount++;
-          sqlQuery += ` AND category ILIKE $${paramCount}`;
-          queryParams.push(`%${category}%`);
-        }
-
-        // Add price range filters
-        if (minPrice || maxPrice) {
-          if (minPrice) {
-            paramCount++;
-            sqlQuery += ` AND price >= $${paramCount}`;
-            queryParams.push(parseFloat(minPrice));
-          }
-          if (maxPrice) {
-            paramCount++;
-            sqlQuery += ` AND price <= $${paramCount}`;
-            queryParams.push(parseFloat(maxPrice));
-          }
-        }
-
-        // Add pagination
-        sqlQuery += ` ORDER BY name ASC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
-        queryParams.push(parseInt(limit), (parseInt(page) - 1) * parseInt(limit));
-
-        const result = await pool.query(sqlQuery, queryParams);
-        await pool.end();
-
-        console.log('PostgreSQL search results:', result.rows.length);
-
-        res.json({
-          success: true,
-          query: query,
-          data: result.rows,
-          total: result.rows.length,
-          source: 'postgresql',
-          pagination: {
-            page: parseInt(page),
-            limit: parseInt(limit),
-            pages: Math.ceil(result.rows.length / limit)
-          }
-        });
-      } catch (pgError) {
-        console.error('PostgreSQL fallback also failed:', pgError);
-        res.status(500).json({ 
-          success: false, 
-          message: 'Search query failed - both Elasticsearch and PostgreSQL unavailable',
-          error: process.env.NODE_ENV === 'development' ? error.message : undefined
-        });
-      }
+      return await performPostgreSQLSearch(req, res);
     }
   }
 };
