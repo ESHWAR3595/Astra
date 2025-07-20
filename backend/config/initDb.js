@@ -5,6 +5,19 @@ const initDatabase = async () => {
   try {
     console.log('🔧 Initializing database...');
     
+    // Debug: Log ALL environment variables related to database
+    console.log('🔍 Environment Variables:');
+    console.log('  PGHOST:', process.env.PGHOST || 'NOT SET');
+    console.log('  PGDATABASE:', process.env.PGDATABASE || 'NOT SET');
+    console.log('  PGUSER:', process.env.PGUSER || 'NOT SET');
+    console.log('  PGPASSWORD:', process.env.PGPASSWORD ? 'SET' : 'NOT SET');
+    console.log('  PGPORT:', process.env.PGPORT || 'NOT SET');
+    console.log('  DB_HOST:', process.env.DB_HOST || 'NOT SET');
+    console.log('  DB_NAME:', process.env.DB_NAME || 'NOT SET');
+    console.log('  DB_USER:', process.env.DB_USER || 'NOT SET');
+    console.log('  DB_PASS:', process.env.DB_PASS ? 'SET' : 'NOT SET');
+    console.log('  DB_PORT:', process.env.DB_PORT || 'NOT SET');
+    
     // Debug: Log database configuration (without password)
     const config = require('./environment');
     console.log('📊 Database config:', {
