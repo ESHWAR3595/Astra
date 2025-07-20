@@ -4,8 +4,9 @@ const bcrypt = require('bcryptjs'); // Import bcrypt for password hashing
 
 // Register a new user
 const register = async (req, res) => {
-  const { name, email, password } = req.body;
-  console.log('Received data:', { name, email, password }); // Log received data
+  const { username, name, email, password } = req.body;
+  const userName = username || name; // Accept both username and name
+  console.log('Received data:', { username, name, email, password }); // Log received data
 
   try {
     if (typeof password !== 'string') {
@@ -16,7 +17,7 @@ const register = async (req, res) => {
 
     const result = await pool.query(
       'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name, email',
-      [name, email, hashedPassword]
+      [userName, email, hashedPassword]
     );
 
     const newUser = result.rows[0];
