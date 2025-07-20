@@ -7,6 +7,15 @@ const ELASTICSEARCH_URL = config.elasticsearch.url;
 const setupElasticsearch = async () => {
   try {
     console.log('Setting up Elasticsearch...');
+    console.log('Elasticsearch URL:', ELASTICSEARCH_URL);
+
+    // Prepare authentication headers for Railway Elasticsearch
+    const authHeaders = {};
+    if (process.env.ELASTIC_USERNAME && process.env.ELASTIC_PASSWORD) {
+      const auth = Buffer.from(`${process.env.ELASTIC_USERNAME}:${process.env.ELASTIC_PASSWORD}`).toString('base64');
+      authHeaders['Authorization'] = `Basic ${auth}`;
+      console.log('Using authentication for Elasticsearch');
+    }
 
     // 1. Create the products index with mapping
     const indexMapping = {
@@ -51,14 +60,24 @@ const setupElasticsearch = async () => {
 
     // Delete index if it exists
     try {
-      await axios.delete(`${ELASTICSEARCH_URL}/products`);
+      await axios.delete(`${ELASTICSEARCH_URL}/products`, {
+        headers: { ...authHeaders },
+        timeout: 10000
+      });
       console.log('Deleted existing products index');
     } catch (error) {
       // Index doesn't exist, which is fine
+      console.log('No existing index to delete');
     }
 
     // Create new index
-    await axios.put(`${ELASTICSEARCH_URL}/products`, indexMapping);
+    await axios.put(`${ELASTICSEARCH_URL}/products`, indexMapping, {
+      headers: { 
+        'Content-Type': 'application/json',
+        ...authHeaders
+      },
+      timeout: 10000
+    });
     console.log('Created products index with mapping');
 
     // 2. Get all products from PostgreSQL
@@ -103,7 +122,11 @@ const setupElasticsearch = async () => {
         `${ELASTICSEARCH_URL}/_bulk`,
         bulkBody,
         {
-          headers: { 'Content-Type': 'application/x-ndjson' }
+          headers: { 
+            'Content-Type': 'application/x-ndjson',
+            ...authHeaders
+          },
+          timeout: 30000
         }
       );
 
@@ -115,11 +138,17 @@ const setupElasticsearch = async () => {
     }
 
     // 4. Refresh the index
-    await axios.post(`${ELASTICSEARCH_URL}/products/_refresh`);
+    await axios.post(`${ELASTICSEARCH_URL}/products/_refresh`, {}, {
+      headers: { ...authHeaders },
+      timeout: 10000
+    });
     console.log('Index refreshed');
 
     // 5. Verify the setup
-    const countResponse = await axios.get(`${ELASTICSEARCH_URL}/products/_count`);
+    const countResponse = await axios.get(`${ELASTICSEARCH_URL}/products/_count`, {
+      headers: { ...authHeaders },
+      timeout: 10000
+    });
     console.log(`Elasticsearch index contains ${countResponse.data.count} documents`);
 
     console.log('Elasticsearch setup completed successfully!');
