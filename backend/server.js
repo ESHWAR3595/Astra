@@ -71,6 +71,30 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Database test endpoint
+app.get('/test-db', async (req, res) => {
+  try {
+    const pool = require('./config/db');
+    const client = await pool.connect();
+    const result = await client.query('SELECT NOW() as current_time');
+    client.release();
+    
+    res.json({
+      success: true,
+      message: 'Database connection successful',
+      currentTime: result.rows[0].current_time,
+      databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT SET'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Database connection failed',
+      error: error.message,
+      databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT SET'
+    });
+  }
+});
+
 // API Routes
 app.use('/', authRoutes);
 app.use('/api/products', productRoutes);
