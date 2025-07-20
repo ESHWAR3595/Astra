@@ -1,5 +1,6 @@
 const axios = require('axios');
 const config = require('../config/environment');
+const { Pool } = require('pg');
 
 const searchController = {
   // Search products in Elasticsearch
@@ -146,12 +147,81 @@ const searchController = {
       }
     } catch (error) {
       console.error('Error querying Elasticsearch:', error.response?.data || error.message);
-      res.status(500).json({ 
-        success: false, 
-        message: 'Search query failed',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-        elasticsearchUrl: config.elasticsearch.url
-      });
+      
+      // Fallback to PostgreSQL search
+      console.log('Falling back to PostgreSQL search...');
+      try {
+        const pool = new Pool({
+          connectionString: process.env.DATABASE_URL,
+          ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+        });
+
+        // Build PostgreSQL search query
+        let sqlQuery = `
+          SELECT id, name, description, price, category, 
+                 "imageUrl", rating, "stockQuantity", "inStock", "freeShipping"
+          FROM products 
+          WHERE (
+            name ILIKE $1 OR 
+            description ILIKE $1 OR 
+            category ILIKE $1
+          )
+        `;
+        
+        const searchTerm = `%${query}%`;
+        const queryParams = [searchTerm];
+        let paramCount = 1;
+
+        // Add category filter
+        if (category) {
+          paramCount++;
+          sqlQuery += ` AND category ILIKE $${paramCount}`;
+          queryParams.push(`%${category}%`);
+        }
+
+        // Add price range filters
+        if (minPrice || maxPrice) {
+          if (minPrice) {
+            paramCount++;
+            sqlQuery += ` AND price >= $${paramCount}`;
+            queryParams.push(parseFloat(minPrice));
+          }
+          if (maxPrice) {
+            paramCount++;
+            sqlQuery += ` AND price <= $${paramCount}`;
+            queryParams.push(parseFloat(maxPrice));
+          }
+        }
+
+        // Add pagination
+        sqlQuery += ` ORDER BY name ASC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
+        queryParams.push(parseInt(limit), (parseInt(page) - 1) * parseInt(limit));
+
+        const result = await pool.query(sqlQuery, queryParams);
+        await pool.end();
+
+        console.log('PostgreSQL search results:', result.rows.length);
+
+        res.json({
+          success: true,
+          query: query,
+          data: result.rows,
+          total: result.rows.length,
+          source: 'postgresql',
+          pagination: {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            pages: Math.ceil(result.rows.length / limit)
+          }
+        });
+      } catch (pgError) {
+        console.error('PostgreSQL fallback also failed:', pgError);
+        res.status(500).json({ 
+          success: false, 
+          message: 'Search query failed - both Elasticsearch and PostgreSQL unavailable',
+          error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+      }
     }
   }
 };
