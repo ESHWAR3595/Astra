@@ -5,6 +5,21 @@ const initDatabase = async () => {
   try {
     console.log('🔧 Initializing database...');
     
+    // Debug: Log database configuration (without password)
+    const config = require('./environment');
+    console.log('📊 Database config:', {
+      host: config.database.host,
+      port: config.database.port,
+      database: config.database.name,
+      user: config.database.user,
+      hasPassword: !!config.database.password
+    });
+    
+    // Test database connection
+    const client = await pool.connect();
+    console.log('✅ Database connection successful!');
+    client.release();
+    
     // Create users table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
@@ -44,7 +59,13 @@ const initDatabase = async () => {
     console.log('✅ Database initialized successfully!');
     
   } catch (error) {
-    console.error('❌ Database initialization failed:', error);
+    console.error('❌ Database initialization failed:', error.message);
+    console.error('🔍 Error details:', {
+      code: error.code,
+      errno: error.errno,
+      syscall: error.syscall,
+      hostname: error.hostname
+    });
     throw error;
   }
 };
