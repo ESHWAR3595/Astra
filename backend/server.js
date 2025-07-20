@@ -210,6 +210,68 @@ app.get('/create-tables', async (req, res) => {
   }
 });
 
+// Add sample products endpoint
+app.get('/add-sample-products', async (req, res) => {
+  try {
+    const pool = require('./config/db');
+    const client = await pool.connect();
+    
+    // Sample products data
+    const sampleProducts = [
+      {
+        name: 'Wireless Bluetooth Headphones',
+        description: 'High-quality wireless headphones with noise cancellation',
+        price: 99.99,
+        category: 'Electronics',
+        image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
+        in_stock: true,
+        free_shipping: true
+      },
+      {
+        name: 'Smartphone Case',
+        description: 'Durable protective case for smartphones',
+        price: 19.99,
+        category: 'Accessories',
+        image_url: 'https://images.unsplash.com/photo-1603313011108-4f2d3c3c3c3c?w=400',
+        in_stock: true,
+        free_shipping: false
+      },
+      {
+        name: 'Laptop Stand',
+        description: 'Adjustable laptop stand for better ergonomics',
+        price: 49.99,
+        category: 'Office',
+        image_url: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400',
+        in_stock: true,
+        free_shipping: true
+      }
+    ];
+    
+    // Insert sample products
+    for (const product of sampleProducts) {
+      await client.query(`
+        INSERT INTO products (name, description, price, category, image_url, in_stock, free_shipping)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        ON CONFLICT DO NOTHING
+      `, [product.name, product.description, product.price, product.category, product.image_url, product.in_stock, product.free_shipping]);
+    }
+    
+    client.release();
+    
+    res.json({
+      success: true,
+      message: 'Sample products added successfully',
+      count: sampleProducts.length
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to add sample products',
+      error: error.message
+    });
+  }
+});
+
 // API Routes
 app.use('/', authRoutes);
 app.use('/api/products', productRoutes);
