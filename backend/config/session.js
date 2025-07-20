@@ -9,13 +9,14 @@ const sessionConfig = {
     createTableIfMissing: true,
   }),
   secret: process.env.SESSION_SECRET || 'fallback-secret-key',
-  resave: true, // Changed to true to ensure session is saved
+  resave: true,
   saveUninitialized: false,
   cookie: { 
-    secure: false, // Changed to false for development and containerized environments
+    secure: process.env.NODE_ENV === 'production' ? false : false, // Set to false for Railway
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     httpOnly: true,
-    sameSite: 'lax'
+    sameSite: 'lax',
+    domain: process.env.NODE_ENV === 'production' ? '.railway.app' : undefined
   },
   name: 'astra-session'
 };

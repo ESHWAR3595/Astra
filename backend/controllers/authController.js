@@ -101,10 +101,11 @@ const checkSession = async (req, res) => {
   console.log('Session check - Session ID:', req.sessionID);
   console.log('Session check - User ID:', req.session.userId);
   console.log('Session check - Full session:', req.session);
+  console.log('Session check - Cookies:', req.headers.cookie);
   
   if (req.session && req.session.userId) {
     try {
-      const result = await pool.query('SELECT id, name, email FROM users WHERE id = $1', [req.session.userId]);
+      const result = await pool.query('SELECT id, username, email FROM users WHERE id = $1', [req.session.userId]);
       if (result.rows.length > 0) {
         console.log('Session check - User found:', result.rows[0]);
         return res.json({ 
