@@ -95,6 +95,48 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
+// Database schema check endpoint
+app.get('/check-schema', async (req, res) => {
+  try {
+    const pool = require('./config/db');
+    const client = await pool.connect();
+    
+    // Check if users table exists
+    const tableExists = await client.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_name = 'users'
+      );
+    `);
+    
+    let tableInfo = null;
+    if (tableExists.rows[0].exists) {
+      // Get table structure
+      const columns = await client.query(`
+        SELECT column_name, data_type, is_nullable
+        FROM information_schema.columns 
+        WHERE table_name = 'users'
+        ORDER BY ordinal_position;
+      `);
+      tableInfo = columns.rows;
+    }
+    
+    client.release();
+    
+    res.json({
+      success: true,
+      usersTableExists: tableExists.rows[0].exists,
+      tableStructure: tableInfo
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Schema check failed',
+      error: error.message
+    });
+  }
+});
+
 // API Routes
 app.use('/', authRoutes);
 app.use('/api/products', productRoutes);
