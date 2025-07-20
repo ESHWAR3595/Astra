@@ -68,20 +68,20 @@ export const ProductProvider = ({ children }) => {
     setError(null);
 
     try {
-      const response = await fetch(`${buildApiUrl(API_ENDPOINTS.SEARCH)}?query=${encodeURIComponent(query)}`);
+      const response = await fetch(`${buildApiUrl(API_ENDPOINTS.SEARCH)}?q=${encodeURIComponent(query)}`);
       const data = await response.json();
       
       if (data.success && Array.isArray(data.data)) {
-        // Transform Elasticsearch results
+        // Transform search results (now in standard format)
         const transformedResults = data.data.map(item => ({
-          id: item._source.id, // Use the actual product ID, not Elasticsearch document ID
-          name: item._source.name || 'Unknown Product',
-          description: item._source.description || 'No description available',
-          price: item._source.price || 0,
-          category: item._source.category || 'Uncategorized',
-          imageUrl: (item._source.image_url || '').trim(),
-          rating: item._source.rating || 0,
-          stock: item._source.stock || (item._source.inStock ? 10 : 0), // Handle inStock from Elasticsearch
+          id: item.id,
+          name: item.name || 'Unknown Product',
+          description: item.description || 'No description available',
+          price: item.price || 0,
+          category: item.category || 'Uncategorized',
+          imageUrl: (item.imageUrl || '').trim(),
+          rating: item.rating || 0,
+          stock: item.stockQuantity || (item.inStock ? 10 : 0),
         }));
         setSearchResults(transformedResults);
       } else {
