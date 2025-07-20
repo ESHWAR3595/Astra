@@ -286,6 +286,11 @@ app.get('/fix-products-table', async (req, res) => {
       ADD COLUMN IF NOT EXISTS free_shipping BOOLEAN DEFAULT false
     `);
     
+    await client.query(`
+      ALTER TABLE products 
+      ADD COLUMN IF NOT EXISTS stock_quantity INTEGER DEFAULT 0
+    `);
+    
     client.release();
     
     res.json({
@@ -296,6 +301,26 @@ app.get('/fix-products-table', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fix products table',
+      error: error.message
+    });
+  }
+});
+
+// Insert all 39 products endpoint
+app.get('/insert-all-products', async (req, res) => {
+  try {
+    const insertProducts = require('./config/insertProducts');
+    await insertProducts();
+    
+    res.json({
+      success: true,
+      message: 'All 39 products inserted successfully into PostgreSQL',
+      count: 39
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to insert products',
       error: error.message
     });
   }

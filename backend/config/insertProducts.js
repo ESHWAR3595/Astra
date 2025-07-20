@@ -1,0 +1,432 @@
+// Product insertion script for PostgreSQL
+const pool = require('./db');
+
+const products = [
+  {
+    name: "Wireless Bluetooth Headphones",
+    description: "Premium wireless headphones with active noise cancellation and long battery life for music enthusiasts",
+    price: 19.99,
+    category: "Audio",
+    image_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 10
+  },
+  {
+    name: "Smart Fitness Watch Pro",
+    description: "Advanced fitness tracking smartwatch with heart rate monitoring and GPS navigation features",
+    price: 29.99,
+    category: "Wearables",
+    image_url: "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 15
+  },
+  {
+    name: "Premium Gaming Mouse",
+    description: "High-precision gaming mouse with customizable RGB lighting and programmable buttons",
+    price: 199.99,
+    category: "Gaming",
+    image_url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 8
+  },
+  {
+    name: "Portable Bluetooth Speaker",
+    description: "Waterproof portable speaker with crystal clear sound and 20-hour battery life",
+    price: 79.99,
+    category: "Audio",
+    image_url: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 12
+  },
+  {
+    name: "Mechanical Gaming Keyboard",
+    description: "Premium mechanical keyboard with tactile switches and customizable RGB backlighting",
+    price: 59.99,
+    category: "Gaming",
+    image_url: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 20
+  },
+  {
+    name: "Adjustable Laptop Stand",
+    description: "Ergonomic aluminum laptop stand with adjustable height and cooling ventilation",
+    price: 129.99,
+    category: "Accessories",
+    image_url: "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 6
+  },
+  {
+    name: "Multi-Port USB Hub",
+    description: "Universal USB-C hub with multiple ports for enhanced laptop connectivity",
+    price: 39.99,
+    category: "Accessories",
+    image_url: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 25
+  },
+  {
+    name: "Fast Wireless Charger",
+    description: "15W fast wireless charging pad compatible with all Qi-enabled devices",
+    price: 24.99,
+    category: "Charging",
+    image_url: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 30
+  },
+  {
+    name: "Over-Ear Noise Cancelling",
+    description: "Premium over-ear headphones with active noise cancellation and premium sound",
+    price: 34.99,
+    category: "Audio",
+    image_url: "https://images.unsplash.com/photo-1601972599720-36938d4ecd31?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 18
+  },
+  {
+    name: "Durable Phone Case Pro",
+    description: "Military-grade protective case with shock absorption and raised screen protection",
+    price: 89.99,
+    category: "Mobile",
+    image_url: "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 10
+  },
+  {
+    name: "High-Capacity Power Bank",
+    description: "20000mAh portable charger with fast charging and multiple output ports",
+    price: 19.99,
+    category: "Charging",
+    image_url: "https://images.unsplash.com/photo-1603313011628-cf0269944e1c?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 40
+  },
+  {
+    name: "4K Webcam with Microphone",
+    description: "Ultra HD webcam with built-in microphone and auto-focus for video conferencing",
+    price: 49.99,
+    category: "Video",
+    image_url: "https://images.unsplash.com/photo-1609592806596-b43bada2f2d2?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 14
+  },
+  {
+    name: "LED Desk Lamp Pro",
+    description: "Smart LED desk lamp with adjustable brightness and color temperature control",
+    price: 69.99,
+    category: "Lighting",
+    image_url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 7
+  },
+  {
+    name: "Insulated Coffee Mug",
+    description: "Double-walled stainless steel coffee mug with thermal insulation technology",
+    price: 29.99,
+    category: "Lifestyle",
+    image_url: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 22
+  },
+  {
+    name: "Premium Notebook Set",
+    description: "High-quality notebooks with premium paper and durable hardcover binding",
+    price: 14.99,
+    category: "Office",
+    image_url: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 35
+  },
+  {
+    name: "Professional Pen Collection",
+    description: "Premium pen set with multiple colors and smooth writing experience",
+    price: 9.99,
+    category: "Office",
+    image_url: "https://images.unsplash.com/photo-1531346680769-a1d79b57de5c?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 50
+  },
+  {
+    name: "Desk Organizer Pro",
+    description: "Multi-compartment desk organizer with premium materials and sleek design",
+    price: 12.99,
+    category: "Office",
+    image_url: "https://images.unsplash.com/photo-1583485088034-697b5bc36b60?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 28
+  },
+  {
+    name: "Stainless Steel Water Bottle",
+    description: "Vacuum-insulated water bottle with temperature retention technology",
+    price: 19.99,
+    category: "Lifestyle",
+    image_url: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 16
+  },
+  {
+    name: "Wireless Earbuds Pro",
+    description: "True wireless earbuds with active noise cancellation and premium sound quality",
+    price: 24.99,
+    category: "Audio",
+    image_url: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 20
+  },
+  {
+    name: "Smart Home Security Camera",
+    description: "1080p security camera with night vision and two-way audio communication",
+    price: 89.99,
+    category: "Smart Home",
+    image_url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 8
+  },
+  {
+    name: "Gaming Headset with Mic",
+    description: "Professional gaming headset with noise-cancelling microphone and surround sound",
+    price: 79.99,
+    category: "Gaming",
+    image_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 12
+  },
+  {
+    name: "Portable SSD Drive",
+    description: "Ultra-fast portable SSD with USB 3.2 Gen 2 interface and rugged design",
+    price: 149.99,
+    category: "Storage",
+    image_url: "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 15
+  },
+  {
+    name: "Bluetooth Car Speaker",
+    description: "Portable car speaker with hands-free calling and long battery life",
+    price: 39.99,
+    category: "Audio",
+    image_url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 18
+  },
+  {
+    name: "Smart LED Strip Lights",
+    description: "WiFi-enabled LED strip lights with voice control and customizable colors",
+    price: 29.99,
+    category: "Smart Home",
+    image_url: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 25
+  },
+  {
+    name: "Wireless Charging Stand",
+    description: "Dual wireless charging stand for phone and smartwatch with fast charging",
+    price: 59.99,
+    category: "Charging",
+    image_url: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 10
+  },
+  {
+    name: "Portable Projector Mini",
+    description: "Compact portable projector with HD resolution and built-in speakers",
+    price: 199.99,
+    category: "Video",
+    image_url: "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 6
+  },
+  {
+    name: "Smart Fitness Tracker",
+    description: "Advanced fitness tracker with heart rate monitoring and sleep tracking",
+    price: 49.99,
+    category: "Wearables",
+    image_url: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 20
+  },
+  {
+    name: "Wireless Gaming Controller",
+    description: "Ergonomic wireless controller with vibration feedback and long battery life",
+    price: 69.99,
+    category: "Gaming",
+    image_url: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 14
+  },
+  {
+    name: "Smart Home Hub Device",
+    description: "Central smart home hub with voice control and device automation",
+    price: 99.99,
+    category: "Smart Home",
+    image_url: "https://images.unsplash.com/photo-1601972599720-36938d4ecd31?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 8
+  },
+  {
+    name: "Portable Air Purifier",
+    description: "Compact air purifier with HEPA filter and air quality monitoring",
+    price: 129.99,
+    category: "Smart Home",
+    image_url: "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 12
+  },
+  {
+    name: "Smart Coffee Maker Pro",
+    description: "Programmable coffee maker with smartphone control and brewing timer",
+    price: 89.99,
+    category: "Smart Home",
+    image_url: "https://images.unsplash.com/photo-1603313011628-cf0269944e1c?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 10
+  },
+  {
+    name: "Wireless Keyboard Mouse",
+    description: "Slim wireless keyboard and mouse combo with silent operation",
+    price: 34.99,
+    category: "Accessories",
+    image_url: "https://images.unsplash.com/photo-1609592806596-b43bada2f2d2?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 22
+  },
+  {
+    name: "Portable Monitor Screen",
+    description: "15.6-inch portable monitor with USB-C connection and HD resolution",
+    price: 179.99,
+    category: "Displays",
+    image_url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 7
+  },
+  {
+    name: "Smart Door Lock Pro",
+    description: "WiFi-enabled smart door lock with fingerprint and keypad access",
+    price: 159.99,
+    category: "Smart Home",
+    image_url: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 5
+  },
+  {
+    name: "Wireless Charging Pad",
+    description: "Fast wireless charging pad with LED indicator and temperature protection",
+    price: 24.99,
+    category: "Charging",
+    image_url: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 30
+  },
+  {
+    name: "Bluetooth Shower Speaker",
+    description: "Waterproof shower speaker with suction cup mount and 8-hour battery",
+    price: 19.99,
+    category: "Audio",
+    image_url: "https://images.unsplash.com/photo-1531346680769-a1d79b57de5c?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 25
+  },
+  {
+    name: "Smart Light Bulb Set",
+    description: "WiFi smart bulbs with voice control and 16 million color options",
+    price: 44.99,
+    category: "Smart Home",
+    image_url: "https://images.unsplash.com/photo-1583485088034-697b5bc36b60?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 18
+  },
+  {
+    name: "Portable Bluetooth Keyboard",
+    description: "Foldable Bluetooth keyboard with backlit keys and long battery life",
+    price: 39.99,
+    category: "Accessories",
+    image_url: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 15
+  },
+  {
+    name: "Smart Thermostat Device",
+    description: "WiFi smart thermostat with energy saving and learning capabilities",
+    price: 119.99,
+    category: "Smart Home",
+    image_url: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&h=400&fit=crop",
+    in_stock: true,
+    free_shipping: true,
+    stock_quantity: 9
+  }
+];
+
+const insertProducts = async () => {
+  try {
+    console.log('🔄 Starting product insertion...');
+    
+    // Clear existing products
+    await pool.query('DELETE FROM products');
+    console.log('✅ Cleared existing products');
+    
+    // Insert new products
+    for (const product of products) {
+      const query = `
+        INSERT INTO products (name, description, price, category, image_url, in_stock, free_shipping, stock_quantity)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `;
+      
+      await pool.query(query, [
+        product.name,
+        product.description,
+        product.price,
+        product.category,
+        product.image_url,
+        product.in_stock,
+        product.free_shipping,
+        product.stock_quantity
+      ]);
+    }
+    
+    console.log(`✅ Successfully inserted ${products.length} products into PostgreSQL!`);
+    
+  } catch (error) {
+    console.error('❌ Error inserting products:', error);
+    throw error;
+  }
+};
+
+module.exports = insertProducts; 
