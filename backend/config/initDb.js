@@ -7,6 +7,7 @@ const initDatabase = async () => {
     
     // Debug: Log ALL environment variables related to database
     console.log('🔍 Environment Variables:');
+    console.log('  DATABASE_URL:', process.env.DATABASE_URL ? 'SET' : 'NOT SET');
     console.log('  PGHOST:', process.env.PGHOST || 'NOT SET');
     console.log('  PGDATABASE:', process.env.PGDATABASE || 'NOT SET');
     console.log('  PGUSER:', process.env.PGUSER || 'NOT SET');
