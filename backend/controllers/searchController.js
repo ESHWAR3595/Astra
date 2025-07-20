@@ -14,7 +14,7 @@ const performPostgreSQLSearch = async (req, res) => {
 
     // Build PostgreSQL search query
     let sqlQuery = `
-      SELECT id, name, description, price, 
+      SELECT id, name, description, CAST(price AS FLOAT) AS price, 
              image_url, in_stock, free_shipping
       FROM products 
       WHERE (
@@ -51,6 +51,7 @@ const performPostgreSQLSearch = async (req, res) => {
     await pool.end();
 
     console.log('PostgreSQL search results:', result.rows.length);
+    console.log('Sample result row:', result.rows[0]);
 
     // Transform PostgreSQL results to match frontend expectations
     const transformedResults = result.rows.map(row => ({
