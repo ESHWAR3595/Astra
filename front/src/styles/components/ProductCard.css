@@ -8,6 +8,9 @@
   background: #ffffff !important;
   position: relative !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  height: 500px !important; /* Fixed height for all cards */
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 .product-card.card:hover {
@@ -25,6 +28,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  flex-shrink: 0 !important; /* Prevent image from shrinking */
 }
 
 .product-card .product-image {
@@ -155,7 +159,8 @@
   padding: 1.25rem !important;
   display: flex !important;
   flex-direction: column !important;
-  height: 100% !important;
+  flex: 1 !important; /* Take remaining space */
+  min-height: 0 !important; /* Allow shrinking */
 }
 
 /* Product Title */
@@ -169,6 +174,8 @@
   -webkit-line-clamp: 2 !important;
   -webkit-box-orient: vertical !important;
   overflow: hidden !important;
+  height: 2.6rem !important; /* Fixed height for 2 lines */
+  flex-shrink: 0 !important;
 }
 
 /* Product Description */
@@ -177,12 +184,18 @@
   font-size: 0.9rem !important;
   line-height: 1.4 !important;
   margin-bottom: 1rem !important;
-  flex-grow: 1 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  height: 3.8rem !important; /* Fixed height for 3 lines */
+  flex-shrink: 0 !important;
 }
 
 /* Product Meta Section */
 .product-card .product-meta {
   margin-top: auto !important;
+  flex-shrink: 0 !important;
 }
 
 /* Price and Rating Row */
