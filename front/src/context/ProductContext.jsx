@@ -68,6 +68,7 @@ export const ProductProvider = ({ children }) => {
     setError(null);
 
     try {
+      // Search API call with correct parameter name 'q'
       const response = await fetch(`${buildApiUrl(API_ENDPOINTS.SEARCH)}?q=${encodeURIComponent(query)}`);
       const data = await response.json();
       
