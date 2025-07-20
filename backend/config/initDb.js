@@ -55,6 +55,8 @@ const initDatabase = async () => {
         price DECIMAL(10,2) NOT NULL,
         category VARCHAR(100),
         image_url TEXT,
+        in_stock BOOLEAN DEFAULT true,
+        free_shipping BOOLEAN DEFAULT false,
         stock_quantity INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
