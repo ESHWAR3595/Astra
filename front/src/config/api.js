@@ -6,7 +6,7 @@ const API_CONFIG = {
   },
   // Production environment (hosted)
   production: {
-    baseURL: process.env.REACT_APP_API_URL || 'https://your-backend-url.railway.app',
+    baseURL: process.env.REACT_APP_API_URL || 'https://astra-production-2955.up.railway.app',
   },
   // Docker environment (containerized)
   docker: {
@@ -34,6 +34,19 @@ if (environment === 'production') {
   // If local development, use the environment-specific config
   API_BASE_URL = API_CONFIG[environment]?.baseURL || API_CONFIG.development.baseURL;
 }
+
+// Add error handling for API URL
+if (!API_BASE_URL) {
+  console.error('API_BASE_URL is not defined! Using fallback URL.');
+  API_BASE_URL = 'https://astra-production-2955.up.railway.app';
+}
+
+console.log('API Configuration:', {
+  environment,
+  isContainerized,
+  API_BASE_URL,
+  envVar: process.env.REACT_APP_API_URL
+});
 
 // Export the appropriate configuration
 export { API_BASE_URL };
