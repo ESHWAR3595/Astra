@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpecs = require('./config/swagger');
+const initDatabase = require('./config/initDb');
 
 // Import configurations
 const corsOptions = require('./config/cors');
@@ -88,11 +89,18 @@ app.use(errorHandler);
 
 // Start the server
 const PORT = process.env.PORT || 5001;
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
   console.log(`🚀 Astra API Server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🔗 Health check: http://localhost:${PORT}/health`);
   console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
+  
+  // Initialize database
+  try {
+    await initDatabase();
+  } catch (error) {
+    console.error('❌ Failed to initialize database:', error);
+  }
 });
 
 // Graceful shutdown

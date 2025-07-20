@@ -6,11 +6,12 @@ const isContainerized = process.env.NODE_ENV === 'production' || process.env.CON
 const config = {
   // Database configuration
   database: {
-    host: process.env.DB_HOST || (isContainerized ? 'host.docker.internal' : 'localhost'),
-    port: process.env.DB_PORT || 5435,
-    name: process.env.DB_NAME || 'astra',
-    user: process.env.DB_USER || 'astra_user',
-    password: process.env.DB_PASS || 'astra_password',
+    // Railway PostgreSQL variables (automatically provided)
+    host: process.env.PGHOST || process.env.DB_HOST || (isContainerized ? 'host.docker.internal' : 'localhost'),
+    port: process.env.PGPORT || process.env.DB_PORT || 5435,
+    name: process.env.PGDATABASE || process.env.DB_NAME || 'astra',
+    user: process.env.PGUSER || process.env.DB_USER || 'astra_user',
+    password: process.env.PGPASSWORD || process.env.DB_PASS || 'astra_password',
   },
 
   // Elasticsearch configuration
