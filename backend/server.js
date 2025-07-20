@@ -137,6 +137,54 @@ app.get('/check-schema', async (req, res) => {
   }
 });
 
+// Manual table creation endpoint
+app.get('/create-tables', async (req, res) => {
+  try {
+    const pool = require('./config/db');
+    const client = await pool.connect();
+    
+    // Create users table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    
+    // Create products table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS products (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        price DECIMAL(10,2) NOT NULL,
+        category VARCHAR(100),
+        image_url TEXT,
+        stock_quantity INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    
+    client.release();
+    
+    res.json({
+      success: true,
+      message: 'Tables created successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Table creation failed',
+      error: error.message
+    });
+  }
+});
+
 // API Routes
 app.use('/', authRoutes);
 app.use('/api/products', productRoutes);
