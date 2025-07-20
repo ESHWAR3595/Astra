@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 const AuthContext = createContext();
@@ -17,25 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('astra_token'));
 
-  // Check session on mount and set up periodic checks
-  useEffect(() => {
-    checkSession();
-    
-    // Set up periodic session checks every 5 minutes
-    const sessionCheckInterval = setInterval(() => {
-      if (isAuthenticated) {
-        console.log('AuthContext: Periodic session check...');
-        checkSession();
-      }
-    }, 5 * 60 * 1000); // 5 minutes
-    
-    // Cleanup interval on unmount
-    return () => {
-      clearInterval(sessionCheckInterval);
-    };
-  }, [isAuthenticated]);
-
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     try {
       console.log('AuthContext: Checking session...');
       
@@ -81,7 +63,25 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  // Check session on mount and set up periodic checks
+  useEffect(() => {
+    checkSession();
+    
+    // Set up periodic session checks every 5 minutes
+    const sessionCheckInterval = setInterval(() => {
+      if (isAuthenticated) {
+        console.log('AuthContext: Periodic session check...');
+        checkSession();
+      }
+    }, 5 * 60 * 1000); // 5 minutes
+    
+    // Cleanup interval on unmount
+    return () => {
+      clearInterval(sessionCheckInterval);
+    };
+  }, [isAuthenticated, checkSession]);
 
   const login = async (credentials) => {
     try {
