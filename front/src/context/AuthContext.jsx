@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('astra_token'));
 
   // Check session on mount and set up periodic checks
   useEffect(() => {
@@ -37,10 +38,19 @@ export const AuthProvider = ({ children }) => {
   const checkSession = async () => {
     try {
       console.log('AuthContext: Checking session...');
+      
+      if (!token) {
+        console.log('AuthContext: No token found');
+        setIsAuthenticated(false);
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+      
       const response = await fetch(buildApiUrl(API_ENDPOINTS.CHECK_SESSION), {
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
       });
       
@@ -59,11 +69,15 @@ export const AuthProvider = ({ children }) => {
         console.log('AuthContext: User is not authenticated');
         setIsAuthenticated(false);
         setUser(null);
+        localStorage.removeItem('astra_token');
+        setToken(null);
       }
     } catch (error) {
       console.error('AuthContext: Error checking session:', error);
       setIsAuthenticated(false);
       setUser(null);
+      localStorage.removeItem('astra_token');
+      setToken(null);
     } finally {
       setLoading(false);
     }
@@ -77,14 +91,17 @@ export const AuthProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify(credentials),
       });
 
       const data = await response.json();
       console.log('AuthContext: Login response:', data);
 
-      if (data.success) {
+      if (data.success && data.token) {
+        // Store token in localStorage
+        localStorage.setItem('astra_token', data.token);
+        setToken(data.token);
+        
         // Update state immediately
         console.log('AuthContext: Login successful, setting isAuthenticated to true');
         setIsAuthenticated(true);
@@ -139,12 +156,17 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await fetch(buildApiUrl(API_ENDPOINTS.LOGOUT), {
         method: 'POST',
-        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
         setIsAuthenticated(false);
         setUser(null);
+        localStorage.removeItem('astra_token');
+        setToken(null);
         return { success: true };
       } else {
         return { success: false, message: 'Logout failed' };

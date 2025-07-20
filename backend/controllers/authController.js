@@ -1,12 +1,16 @@
 // controllers/authController.js
 const pool = require('../config/db'); // Import database pool
 const bcrypt = require('bcryptjs'); // Import bcrypt for password hashing
+const crypto = require('crypto'); // For generating tokens
+
+// Store active tokens in memory (in production, use Redis)
+const activeTokens = new Map();
 
 // Register a new user
 const register = async (req, res) => {
   const { username, name, email, password } = req.body;
   const userName = username || name; // Accept both username and name
-  console.log('Received data:', { username, name, email, password }); // Log received data
+  console.log('Received data:', { username, name, email, password });
 
   try {
     if (typeof password !== 'string') {
@@ -40,37 +44,36 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Clear any previous session
-  req.session.userId = null;
-
   try {
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (result.rows.length > 0) {
       const user = result.rows[0];
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
-        req.session.userId = user.id; // Save user ID in session
-        console.log('User logged in with ID:', req.session.userId);
-        console.log('Session ID:', req.sessionID);
+        // Generate a token
+        const token = crypto.randomBytes(32).toString('hex');
+        const tokenExpiry = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7 days
         
-        // Save session explicitly
-        req.session.save((err) => {
-          if (err) {
-            console.error('Error saving session:', err);
-            return res.status(500).json({ success: false, message: 'Session save failed' });
-          }
-          
-          console.log('Session saved successfully');
-          return res.status(200).json({ 
-            success: true, 
-            message: 'Login successful',
-            user: {
-              id: user.id,
-              username: user.username,
-              email: user.email
-            },
-            sessionId: req.sessionID // Return session ID for frontend
-          });
+        // Store token in memory
+        activeTokens.set(token, {
+          userId: user.id,
+          email: user.email,
+          expiry: tokenExpiry
+        });
+        
+        console.log('User logged in with ID:', user.id);
+        console.log('Token generated:', token);
+        
+        return res.status(200).json({ 
+          success: true, 
+          message: 'Login successful',
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email
+          },
+          token: token,
+          expiresAt: tokenExpiry
         });
       } else {
         res.status(401).json({ success: false, message: 'Invalid email or password' });
@@ -86,45 +89,48 @@ const login = async (req, res) => {
 
 // Logout a user
 const logout = (req, res) => {
-  console.log('Attempting to logout user with session:', req.session);
-  req.session.destroy(err => {
-    if (err) {
-      console.error('Logout error:', err);
-      return res.status(500).json({ error: 'Logout failed' });
-    }
-    console.log('Logout successful, session destroyed.');
-    res.status(200).json({ message: 'Logout successful' });
-  });
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  
+  if (token && activeTokens.has(token)) {
+    activeTokens.delete(token);
+    console.log('User logged out, token removed');
+  }
+  
+  res.status(200).json({ message: 'Logout successful' });
 };
 
-// Check session
+// Check session/token
 const checkSession = async (req, res) => {
-  console.log('Session check - Session ID:', req.sessionID);
-  console.log('Session check - User ID:', req.session.userId);
-  console.log('Session check - Full session:', req.session);
-  console.log('Session check - Cookies:', req.headers.cookie);
-  console.log('Session check - Query params:', req.query);
+  const token = req.headers.authorization?.replace('Bearer ', '') || req.query.token;
   
-  // Try to get session ID from query params as fallback
-  const sessionId = req.query.sessionId || req.sessionID;
+  console.log('Token check - Token:', token ? 'present' : 'missing');
   
-  if (req.session && req.session.userId) {
+  if (token && activeTokens.has(token)) {
+    const tokenData = activeTokens.get(token);
+    
+    // Check if token is expired
+    if (Date.now() > tokenData.expiry) {
+      activeTokens.delete(token);
+      console.log('Token expired, removed');
+      return res.json({ isAuthenticated: false });
+    }
+    
     try {
-      const result = await pool.query('SELECT id, username, email FROM users WHERE id = $1', [req.session.userId]);
+      const result = await pool.query('SELECT id, username, email FROM users WHERE id = $1', [tokenData.userId]);
       if (result.rows.length > 0) {
-        console.log('Session check - User found:', result.rows[0]);
+        console.log('Token check - User found:', result.rows[0]);
         return res.json({ 
           isAuthenticated: true, 
           user: result.rows[0] 
         });
       } else {
-        console.log('Session check - User not found in database');
+        console.log('Token check - User not found in database');
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
   } else {
-    console.log('Session check - No valid session found');
+    console.log('Token check - No valid token found');
   }
   
   return res.json({ isAuthenticated: false });
