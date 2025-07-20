@@ -36,7 +36,13 @@ const config = {
 
   // CORS configuration
   cors: {
-    origin: process.env.FRONTEND_URL || (isContainerized ? 'http://host.docker.internal:8080' : 'http://localhost:3000'),
+    origin: [
+      process.env.FRONTEND_URL || (isContainerized ? 'http://host.docker.internal:8080' : 'http://localhost:3000'),
+      'https://astraecom.netlify.app',
+      'https://astra-ecommerce.netlify.app',
+      'http://localhost:3000',
+      'http://localhost:8080'
+    ],
     credentials: true,
   }
 };
